@@ -1,3 +1,5 @@
+#![doc(html_root_url="https://arcnmx.github.io/serde-value")]
+
 extern crate serde;
 extern crate ordered_float;
 
