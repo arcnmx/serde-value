@@ -201,6 +201,10 @@ impl Value {
     pub fn deserializer(self) -> Deserializer {
         Deserializer::new(self)
     }
+
+    pub fn deserialize_into<T: Deserialize>(self) -> Result<T, DeserializerError> {
+        T::deserialize(&mut self.deserializer())
+    }
 }
 
 impl Eq for Value { }
