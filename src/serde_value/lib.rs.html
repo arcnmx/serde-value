@@ -527,7 +527,15 @@
 <span id="485">485</span>
 <span id="486">486</span>
 <span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
 </pre><pre class='rust '>
+<span class='attribute'>#<span class='op'>!</span>[<span class='ident'>doc</span>(<span class='ident'>html_root_url</span><span class='op'>=</span><span class='string'>&quot;https://arcnmx.github.io/serde-value&quot;</span>)]</span>
+
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>serde</span>;
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>ordered_float</span>;
 
@@ -728,6 +736,10 @@
 
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>deserializer</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Deserializer</span> {
         <span class='ident'>Deserializer</span>::<span class='ident'>new</span>(<span class='self'>self</span>)
+    }
+
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>deserialize_into</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Deserialize</span><span class='op'>&gt;</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>T</span>, <span class='ident'>DeserializerError</span><span class='op'>&gt;</span> {
+        <span class='ident'>T</span>::<span class='ident'>deserialize</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>deserializer</span>())
     }
 }
 
