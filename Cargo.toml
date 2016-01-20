@@ -11,5 +11,5 @@ keywords = ["serde"]
 license = "MIT"
 
 [dependencies]
-serde = "0.6"
-ordered-float = "0.0"
+serde = "^0.6.10"
+ordered-float = "^0.0.2"
