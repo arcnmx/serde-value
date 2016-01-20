@@ -474,6 +474,17 @@ impl de::Deserializer for Deserializer {
             Err(de::Error::end_of_stream())
         }
     }
+
+    fn visit_option<V: de::Visitor>(&mut self, mut visitor: V) -> Result<V::Value, Self::Error> {
+        match self.value {
+            Some(Value::Option(..)) => self.visit(visitor),
+            Some(Value::Unit) => {
+                self.value.take();
+                visitor.visit_none()
+            },
+            _ => visitor.visit_some(self)
+        }
+    }
 }
 
 pub struct ValueDeserializer(Deserializer);
