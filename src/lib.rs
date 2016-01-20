@@ -415,12 +415,6 @@ impl<'a, I: Iterator<Item=(Value, Value)>> de::MapVisitor for MapVisitor<'a, I> 
         }
     }
 
-    fn missing_field<V: de::Deserialize>(&mut self, _field: &'static str) -> Result<V, Self::Error> {
-        //let mut de = de::value::ValueDeserializer::into_deserializer(());
-        let mut de = Deserializer::new(Value::Unit);
-        de::Deserialize::deserialize(&mut de)
-    }
-
     fn end(&mut self) -> Result<(), Self::Error> {
         self.de.borrow_map().extend(&mut self.iter);
         Ok(())
