@@ -12,19 +12,39 @@ use ordered_float::OrderedFloat;
 
 #[derive(Debug)]
 pub enum DeserializerError {
-    Syntax(String),
+    Custom(String),
     EndOfStream,
+    InvalidType(de::Type),
+    InvalidValue(String),
+    InvalidLength(usize),
+    UnknownVariant(String),
     UnknownField(String),
     MissingField(&'static str),
 }
 
 impl de::Error for DeserializerError {
-    fn syntax(msg: &str) -> Self {
-        DeserializerError::Syntax(msg.into())
+    fn custom<T: Into<String>>(msg: T) -> Self {
+        DeserializerError::Custom(msg.into())
     }
 
     fn end_of_stream() -> Self {
         DeserializerError::EndOfStream
+    }
+
+    fn invalid_type(ty: de::Type) -> Self {
+        DeserializerError::InvalidType(ty)
+    }
+
+    fn invalid_value(msg: &str) -> Self {
+        DeserializerError::InvalidValue(msg.into())
+    }
+
+    fn invalid_length(len: usize) -> Self {
+        DeserializerError::InvalidLength(len)
+    }
+
+    fn unknown_variant(field: &str) -> Self {
+        DeserializerError::UnknownVariant(field.into())
     }
 
     fn unknown_field(field: &str) -> Self {
@@ -39,8 +59,12 @@ impl de::Error for DeserializerError {
 impl DeserializerError {
     pub fn to_error<E: de::Error>(&self) -> E {
         match *self {
-            DeserializerError::Syntax(ref msg) => E::syntax(msg),
-            DeserializerError::EndOfStream=> E::end_of_stream(),
+            DeserializerError::Custom(ref msg) => E::custom(msg.clone()),
+            DeserializerError::EndOfStream => E::end_of_stream(),
+            DeserializerError::InvalidType(ty) => E::invalid_type(ty),
+            DeserializerError::InvalidValue(ref msg) => E::invalid_value(msg),
+            DeserializerError::InvalidLength(len) => E::invalid_length(len),
+            DeserializerError::UnknownVariant(ref field) => E::unknown_variant(field),
             DeserializerError::UnknownField(ref field) => E::unknown_field(field),
             DeserializerError::MissingField(field) => E::missing_field(field),
         }
@@ -60,8 +84,12 @@ impl Error for DeserializerError {
 impl fmt::Display for DeserializerError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            DeserializerError::Syntax(ref msg) => write!(f, "Syntax error: {}", msg),
+            DeserializerError::Custom(ref msg) => write!(f, "{}", msg),
             DeserializerError::EndOfStream => write!(f, "End of stream"),
+            DeserializerError::InvalidType(ty) => write!(f, "Invalid type. Expected {:?}", ty),
+            DeserializerError::InvalidValue(ref msg) => write!(f, "Invalid value: {}", msg),
+            DeserializerError::InvalidLength(len) => write!(f, "Invalid length: {}", len),
+            DeserializerError::UnknownVariant(ref field) => write!(f, "Unknown variant: {}", field),
             DeserializerError::UnknownField(ref field) => write!(f, "Unknown field: {}", field),
             DeserializerError::MissingField(field) => write!(f, "Missing field: {}", field),
         }
@@ -71,10 +99,14 @@ impl fmt::Display for DeserializerError {
 impl From<de::value::Error> for DeserializerError {
     fn from(e: de::value::Error) -> Self {
         match e {
-            de::value::Error::SyntaxError => DeserializerError::Syntax(String::new()),
-            de::value::Error::EndOfStreamError => DeserializerError::EndOfStream,
-            de::value::Error::UnknownFieldError(field) => DeserializerError::UnknownField(field),
-            de::value::Error::MissingFieldError(field) => DeserializerError::MissingField(field),
+            de::value::Error::Custom(msg) => DeserializerError::Custom(msg),
+            de::value::Error::InvalidType(ty) => DeserializerError::InvalidType(ty),
+            de::value::Error::InvalidLength(len) => DeserializerError::InvalidLength(len),
+            de::value::Error::InvalidValue(msg) => DeserializerError::InvalidValue(msg),
+            de::value::Error::EndOfStream => DeserializerError::EndOfStream,
+            de::value::Error::UnknownVariant(field) => DeserializerError::UnknownVariant(field),
+            de::value::Error::UnknownField(field) => DeserializerError::UnknownField(field),
+            de::value::Error::MissingField(field) => DeserializerError::MissingField(field),
         }
     }
 }
@@ -296,11 +328,11 @@ impl de::Visitor for ValueVisitor {
     }
 
     fn visit_some<D: de::Deserializer>(&mut self, d: &mut D) -> Result<Value, D::Error> {
-        d.visit(ValueVisitor).map(|v| Value::Option(Some(Box::new(v))))
+        d.deserialize(ValueVisitor).map(|v| Value::Option(Some(Box::new(v))))
     }
 
     fn visit_newtype_struct<D: de::Deserializer>(&mut self, d: &mut D) -> Result<Value, D::Error> {
-        d.visit(ValueVisitor).map(|v| Value::Newtype(Box::new(v)))
+        d.deserialize(ValueVisitor).map(|v| Value::Newtype(Box::new(v)))
     }
 
     fn visit_seq<V: de::SeqVisitor>(&mut self, visitor: V) -> Result<Value, V::Error> {
@@ -326,36 +358,36 @@ impl de::Visitor for ValueVisitor {
 
 impl Deserialize for Value {
     fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<Self, D::Error> {
-        d.visit(ValueVisitor)
+        d.deserialize(ValueVisitor)
     }
 }
 
 impl Serialize for Value {
     fn serialize<S: Serializer>(&self, s: &mut S) -> Result<(), S::Error> {
         match self {
-            &Value::Bool(v) => s.visit_bool(v),
-            &Value::Usize(v) => s.visit_usize(v),
-            &Value::U8(v) => s.visit_u8(v),
-            &Value::U16(v) => s.visit_u16(v),
-            &Value::U32(v) => s.visit_u32(v),
-            &Value::U64(v) => s.visit_u64(v),
-            &Value::Isize(v) => s.visit_isize(v),
-            &Value::I8(v) => s.visit_i8(v),
-            &Value::I16(v) => s.visit_i16(v),
-            &Value::I32(v) => s.visit_i32(v),
-            &Value::I64(v) => s.visit_i64(v),
-            &Value::F32(v) => s.visit_f32(v),
-            &Value::F64(v) => s.visit_f64(v),
-            &Value::Char(v) => s.visit_char(v),
-            &Value::String(ref v) => s.visit_str(v),
-            &Value::Unit => s.visit_unit(),
-            &Value::UnitStruct(name) => s.visit_unit_struct(name),
-            &Value::Option(None) => s.visit_none(),
-            &Value::Option(Some(ref v)) => s.visit_some(v),
-            &Value::Newtype(ref v) => s.visit_newtype_struct("", v),
+            &Value::Bool(v) => s.serialize_bool(v),
+            &Value::Usize(v) => s.serialize_usize(v),
+            &Value::U8(v) => s.serialize_u8(v),
+            &Value::U16(v) => s.serialize_u16(v),
+            &Value::U32(v) => s.serialize_u32(v),
+            &Value::U64(v) => s.serialize_u64(v),
+            &Value::Isize(v) => s.serialize_isize(v),
+            &Value::I8(v) => s.serialize_i8(v),
+            &Value::I16(v) => s.serialize_i16(v),
+            &Value::I32(v) => s.serialize_i32(v),
+            &Value::I64(v) => s.serialize_i64(v),
+            &Value::F32(v) => s.serialize_f32(v),
+            &Value::F64(v) => s.serialize_f64(v),
+            &Value::Char(v) => s.serialize_char(v),
+            &Value::String(ref v) => s.serialize_str(v),
+            &Value::Unit => s.serialize_unit(),
+            &Value::UnitStruct(name) => s.serialize_unit_struct(name),
+            &Value::Option(None) => s.serialize_none(),
+            &Value::Option(Some(ref v)) => s.serialize_some(v),
+            &Value::Newtype(ref v) => s.serialize_newtype_struct("", v),
             &Value::Seq(ref v) => v.serialize(s),
             &Value::Map(ref v) => v.serialize(s),
-            &Value::Bytes(ref v) => s.visit_bytes(v),
+            &Value::Bytes(ref v) => s.serialize_bytes(v),
         }
     }
 }
@@ -434,7 +466,7 @@ impl Deserializer {
 impl de::Deserializer for Deserializer {
     type Error = DeserializerError;
 
-    fn visit<V: de::Visitor>(&mut self, mut visitor: V) -> Result<V::Value, Self::Error> {
+    fn deserialize<V: de::Visitor>(&mut self, mut visitor: V) -> Result<V::Value, Self::Error> {
         if let Some(value) = self.value.take() {
             match value {
                 Value::Bool(v) => visitor.visit_bool(v),
@@ -475,9 +507,9 @@ impl de::Deserializer for Deserializer {
         }
     }
 
-    fn visit_option<V: de::Visitor>(&mut self, mut visitor: V) -> Result<V::Value, Self::Error> {
+    fn deserialize_option<V: de::Visitor>(&mut self, mut visitor: V) -> Result<V::Value, Self::Error> {
         match self.value {
-            Some(Value::Option(..)) => self.visit(visitor),
+            Some(Value::Option(..)) => self.deserialize(visitor),
             Some(Value::Unit) => {
                 self.value.take();
                 visitor.visit_none()
@@ -492,7 +524,7 @@ pub struct ValueDeserializer(Deserializer);
 impl de::Deserializer for ValueDeserializer {
     type Error = de::value::Error;
 
-    fn visit<V: de::Visitor>(&mut self, visitor: V) -> Result<V::Value, Self::Error> {
-        self.0.visit(visitor).map_err(DeserializerError::into_error)
+    fn deserialize<V: de::Visitor>(&mut self, visitor: V) -> Result<V::Value, Self::Error> {
+        self.0.deserialize(visitor).map_err(DeserializerError::into_error)
     }
 }
