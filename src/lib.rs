@@ -10,6 +10,66 @@ use std::cmp::Ordering;
 use serde::{de, Deserialize, Serialize, Serializer};
 use ordered_float::OrderedFloat;
 
+macro_rules! forward_to_deserialize {
+    ($($func:ident),*) => {
+        $(forward_to_deserialize!{func: $func})*
+    };
+    (func: deserialize_unit_struct) => {
+        forward_to_deserialize!{named: deserialize_unit_struct}
+    };
+    (func: deserialize_newtype_struct) => {
+        forward_to_deserialize!{named: deserialize_newtype_struct}
+    };
+    (func: deserialize_tuple) => {
+        forward_to_deserialize!{tup_fn: deserialize_tuple}
+    };
+    (func: deserialize_seq_fixed_size) => {
+        forward_to_deserialize!{tup_fn: deserialize_seq_fixed_size}
+    };
+    (func: deserialize_tuple_struct) => {
+        #[inline]
+        fn deserialize_tuple_struct<__V>(&mut self, _: &str, _: usize, visitor: __V) -> Result<__V::Value, Self::Error>
+            where __V: ::serde::de::Visitor {
+            self.deserialize(visitor)
+        }
+    };
+    (func: deserialize_struct) => {
+        #[inline]
+        fn deserialize_struct<__V>(&mut self, _: &str, _: &[&str], visitor: __V) -> Result<__V::Value, Self::Error>
+            where __V: ::serde::de::Visitor {
+            self.deserialize(visitor)
+        }
+    };
+    (func: deserialize_enum) => {
+        #[inline]
+        fn deserialize_enum<__V>(&mut self, _: &str, _: &[&str], _: __V) -> Result<__V::Value, Self::Error>
+            where __V: ::serde::de::EnumVisitor {
+            Err(::serde::de::Error::invalid_type(::serde::de::Type::Enum))
+        }
+    };
+    (named: $func:ident) => {
+        #[inline]
+        fn $func<__V>(&mut self, _: &str, visitor: __V) -> Result<__V::Value, Self::Error>
+            where __V: ::serde::de::Visitor {
+            self.deserialize(visitor)
+        }
+    };
+    (tup_fn: $func: ident) => {
+        #[inline]
+        fn $func<__V>(&mut self, _: usize, visitor: __V) -> Result<__V::Value, Self::Error>
+            where __V: ::serde::de::Visitor {
+            self.deserialize(visitor)
+        }
+    };
+    (func: $func:ident) => {
+        #[inline]
+        fn $func<__V>(&mut self, visitor: __V) -> Result<__V::Value, Self::Error>
+            where __V: ::serde::de::Visitor {
+            self.deserialize(visitor)
+        }
+    };
+}
+
 #[derive(Debug)]
 pub enum DeserializerError {
     Custom(String),
@@ -458,6 +518,22 @@ impl<'a, I: Iterator<Item=(Value, Value)>> de::MapVisitor for MapVisitor<'a, I> 
         impl de::Deserializer for MissingFieldDeserializer {
             type Error = DeserializerError;
 
+            forward_to_deserialize! {
+                deserialize_bool,
+                deserialize_f64, deserialize_f32,
+                deserialize_u8, deserialize_u16, deserialize_u32, deserialize_u64, deserialize_usize,
+                deserialize_i8, deserialize_i16, deserialize_i32, deserialize_i64, deserialize_isize,
+                deserialize_char, deserialize_str, deserialize_string,
+                deserialize_ignored_any,
+                deserialize_bytes,
+                deserialize_unit_struct, deserialize_unit,
+                deserialize_seq, deserialize_seq_fixed_size,
+                deserialize_map, deserialize_newtype_struct, deserialize_struct_field,
+                deserialize_tuple,
+                deserialize_enum,
+                deserialize_struct, deserialize_tuple_struct
+            }
+
             fn deserialize<V: de::Visitor>(&mut self,
                                            _visitor: V)
                                            -> Result<V::Value, Self::Error> {
@@ -489,6 +565,22 @@ impl Deserializer {
 
 impl de::Deserializer for Deserializer {
     type Error = DeserializerError;
+
+    forward_to_deserialize! {
+        deserialize_bool,
+        deserialize_f64, deserialize_f32,
+        deserialize_u8, deserialize_u16, deserialize_u32, deserialize_u64, deserialize_usize,
+        deserialize_i8, deserialize_i16, deserialize_i32, deserialize_i64, deserialize_isize,
+        deserialize_char, deserialize_str, deserialize_string,
+        deserialize_ignored_any,
+        deserialize_bytes,
+        deserialize_unit_struct, deserialize_unit,
+        deserialize_seq, deserialize_seq_fixed_size,
+        deserialize_map, deserialize_newtype_struct, deserialize_struct_field,
+        deserialize_tuple,
+        deserialize_enum,
+        deserialize_struct, deserialize_tuple_struct
+    }
 
     fn deserialize<V: de::Visitor>(&mut self, mut visitor: V) -> Result<V::Value, Self::Error> {
         if let Some(value) = self.value.take() {
@@ -547,6 +639,23 @@ pub struct ValueDeserializer(Deserializer);
 
 impl de::Deserializer for ValueDeserializer {
     type Error = de::value::Error;
+
+    forward_to_deserialize! {
+        deserialize_bool,
+        deserialize_f64, deserialize_f32,
+        deserialize_u8, deserialize_u16, deserialize_u32, deserialize_u64, deserialize_usize,
+        deserialize_i8, deserialize_i16, deserialize_i32, deserialize_i64, deserialize_isize,
+        deserialize_char, deserialize_str, deserialize_string,
+        deserialize_ignored_any,
+        deserialize_bytes,
+        deserialize_unit_struct, deserialize_unit,
+        deserialize_seq, deserialize_seq_fixed_size,
+        deserialize_map, deserialize_newtype_struct, deserialize_struct_field,
+        deserialize_tuple,
+        deserialize_enum,
+        deserialize_struct, deserialize_tuple_struct,
+        deserialize_option
+    }
 
     fn deserialize<V: de::Visitor>(&mut self, visitor: V) -> Result<V::Value, Self::Error> {
         self.0.deserialize(visitor).map_err(DeserializerError::into_error)
