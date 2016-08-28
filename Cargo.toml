@@ -12,4 +12,4 @@ license = "MIT"
 
 [dependencies]
 serde = "^0.7.0"
-ordered-float = "^0.1.0"
+ordered-float = "^0.2.0"
