@@ -9,8 +9,9 @@
 
     <title>lib.rs.html -- source</title>
 
-    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
-    <link rel="stylesheet" type="text/css" href="../../main.css">
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
+    
 
     
     
@@ -595,6 +596,105 @@
 <span id="552">552</span>
 <span id="553">553</span>
 <span id="554">554</span>
+<span id="555">555</span>
+<span id="556">556</span>
+<span id="557">557</span>
+<span id="558">558</span>
+<span id="559">559</span>
+<span id="560">560</span>
+<span id="561">561</span>
+<span id="562">562</span>
+<span id="563">563</span>
+<span id="564">564</span>
+<span id="565">565</span>
+<span id="566">566</span>
+<span id="567">567</span>
+<span id="568">568</span>
+<span id="569">569</span>
+<span id="570">570</span>
+<span id="571">571</span>
+<span id="572">572</span>
+<span id="573">573</span>
+<span id="574">574</span>
+<span id="575">575</span>
+<span id="576">576</span>
+<span id="577">577</span>
+<span id="578">578</span>
+<span id="579">579</span>
+<span id="580">580</span>
+<span id="581">581</span>
+<span id="582">582</span>
+<span id="583">583</span>
+<span id="584">584</span>
+<span id="585">585</span>
+<span id="586">586</span>
+<span id="587">587</span>
+<span id="588">588</span>
+<span id="589">589</span>
+<span id="590">590</span>
+<span id="591">591</span>
+<span id="592">592</span>
+<span id="593">593</span>
+<span id="594">594</span>
+<span id="595">595</span>
+<span id="596">596</span>
+<span id="597">597</span>
+<span id="598">598</span>
+<span id="599">599</span>
+<span id="600">600</span>
+<span id="601">601</span>
+<span id="602">602</span>
+<span id="603">603</span>
+<span id="604">604</span>
+<span id="605">605</span>
+<span id="606">606</span>
+<span id="607">607</span>
+<span id="608">608</span>
+<span id="609">609</span>
+<span id="610">610</span>
+<span id="611">611</span>
+<span id="612">612</span>
+<span id="613">613</span>
+<span id="614">614</span>
+<span id="615">615</span>
+<span id="616">616</span>
+<span id="617">617</span>
+<span id="618">618</span>
+<span id="619">619</span>
+<span id="620">620</span>
+<span id="621">621</span>
+<span id="622">622</span>
+<span id="623">623</span>
+<span id="624">624</span>
+<span id="625">625</span>
+<span id="626">626</span>
+<span id="627">627</span>
+<span id="628">628</span>
+<span id="629">629</span>
+<span id="630">630</span>
+<span id="631">631</span>
+<span id="632">632</span>
+<span id="633">633</span>
+<span id="634">634</span>
+<span id="635">635</span>
+<span id="636">636</span>
+<span id="637">637</span>
+<span id="638">638</span>
+<span id="639">639</span>
+<span id="640">640</span>
+<span id="641">641</span>
+<span id="642">642</span>
+<span id="643">643</span>
+<span id="644">644</span>
+<span id="645">645</span>
+<span id="646">646</span>
+<span id="647">647</span>
+<span id="648">648</span>
+<span id="649">649</span>
+<span id="650">650</span>
+<span id="651">651</span>
+<span id="652">652</span>
+<span id="653">653</span>
 </pre><pre class='rust '>
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>doc</span>(<span class='ident'>html_root_url</span><span class='op'>=</span><span class='string'>&quot;https://arcnmx.github.io/serde-value&quot;</span>)]</span>
 
@@ -607,6 +707,9 @@
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>cmp</span>::<span class='ident'>Ordering</span>;
 <span class='kw'>use</span> <span class='ident'>serde</span>::{<span class='ident'>de</span>, <span class='ident'>Deserialize</span>, <span class='ident'>Serialize</span>, <span class='ident'>Serializer</span>};
 <span class='kw'>use</span> <span class='ident'>ordered_float</span>::<span class='ident'>OrderedFloat</span>;
+
+<span class='attribute'>#[<span class='ident'>macro_use</span>]</span>
+<span class='kw'>mod</span> <span class='ident'>forward</span>;
 
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>DeserializerError</span> {
@@ -621,35 +724,35 @@
 }
 
 <span class='kw'>impl</span> <span class='ident'>de</span>::<span class='ident'>Error</span> <span class='kw'>for</span> <span class='ident'>DeserializerError</span> {
-    <span class='kw'>fn</span> <span class='ident'>custom</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Into</span><span class='op'>&lt;</span><span class='ident'>String</span><span class='op'>&gt;&gt;</span>(<span class='ident'>msg</span>: <span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
+    <span class='kw'>fn</span> <span class='ident'>custom</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Into</span><span class='op'>&lt;</span><span class='ident'>String</span><span class='op'>&gt;&gt;</span>(<span class='ident'>msg</span>: <span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='ident'>DeserializerError</span>::<span class='ident'>Custom</span>(<span class='ident'>msg</span>.<span class='ident'>into</span>())
     }
 
-    <span class='kw'>fn</span> <span class='ident'>end_of_stream</span>() <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
+    <span class='kw'>fn</span> <span class='ident'>end_of_stream</span>() <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='ident'>DeserializerError</span>::<span class='ident'>EndOfStream</span>
     }
 
-    <span class='kw'>fn</span> <span class='ident'>invalid_type</span>(<span class='ident'>ty</span>: <span class='ident'>de</span>::<span class='ident'>Type</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
+    <span class='kw'>fn</span> <span class='ident'>invalid_type</span>(<span class='ident'>ty</span>: <span class='ident'>de</span>::<span class='ident'>Type</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='ident'>DeserializerError</span>::<span class='ident'>InvalidType</span>(<span class='ident'>ty</span>)
     }
 
-    <span class='kw'>fn</span> <span class='ident'>invalid_value</span>(<span class='ident'>msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
+    <span class='kw'>fn</span> <span class='ident'>invalid_value</span>(<span class='ident'>msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='ident'>DeserializerError</span>::<span class='ident'>InvalidValue</span>(<span class='ident'>msg</span>.<span class='ident'>into</span>())
     }
 
-    <span class='kw'>fn</span> <span class='ident'>invalid_length</span>(<span class='ident'>len</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
+    <span class='kw'>fn</span> <span class='ident'>invalid_length</span>(<span class='ident'>len</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='ident'>DeserializerError</span>::<span class='ident'>InvalidLength</span>(<span class='ident'>len</span>)
     }
 
-    <span class='kw'>fn</span> <span class='ident'>unknown_variant</span>(<span class='ident'>field</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
+    <span class='kw'>fn</span> <span class='ident'>unknown_variant</span>(<span class='ident'>field</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='ident'>DeserializerError</span>::<span class='ident'>UnknownVariant</span>(<span class='ident'>field</span>.<span class='ident'>into</span>())
     }
 
-    <span class='kw'>fn</span> <span class='ident'>unknown_field</span>(<span class='ident'>field</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
+    <span class='kw'>fn</span> <span class='ident'>unknown_field</span>(<span class='ident'>field</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='ident'>DeserializerError</span>::<span class='ident'>UnknownField</span>(<span class='ident'>field</span>.<span class='ident'>into</span>())
     }
 
-    <span class='kw'>fn</span> <span class='ident'>missing_field</span>(<span class='ident'>field</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
+    <span class='kw'>fn</span> <span class='ident'>missing_field</span>(<span class='ident'>field</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='ident'>DeserializerError</span>::<span class='ident'>MissingField</span>(<span class='ident'>field</span>)
     }
 }
@@ -695,7 +798,7 @@
 }
 
 <span class='kw'>impl</span> <span class='ident'>From</span><span class='op'>&lt;</span><span class='ident'>de</span>::<span class='ident'>value</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>DeserializerError</span> {
-    <span class='kw'>fn</span> <span class='ident'>from</span>(<span class='ident'>e</span>: <span class='ident'>de</span>::<span class='ident'>value</span>::<span class='ident'>Error</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
+    <span class='kw'>fn</span> <span class='ident'>from</span>(<span class='ident'>e</span>: <span class='ident'>de</span>::<span class='ident'>value</span>::<span class='ident'>Error</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='kw'>match</span> <span class='ident'>e</span> {
             <span class='ident'>de</span>::<span class='ident'>value</span>::<span class='ident'>Error</span>::<span class='ident'>Custom</span>(<span class='ident'>msg</span>) <span class='op'>=&gt;</span> <span class='ident'>DeserializerError</span>::<span class='ident'>Custom</span>(<span class='ident'>msg</span>),
             <span class='ident'>de</span>::<span class='ident'>value</span>::<span class='ident'>Error</span>::<span class='ident'>InvalidType</span>(<span class='ident'>ty</span>) <span class='op'>=&gt;</span> <span class='ident'>DeserializerError</span>::<span class='ident'>InvalidType</span>(<span class='ident'>ty</span>),
@@ -741,37 +844,37 @@
 }
 
 <span class='kw'>impl</span> <span class='ident'>PartialEq</span> <span class='kw'>for</span> <span class='ident'>Value</span> {
-    <span class='kw'>fn</span> <span class='ident'>eq</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='kw-2'>&amp;</span><span class='kw'>Self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+    <span class='kw'>fn</span> <span class='ident'>eq</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='kw-2'>&amp;</span><span class='self'>Self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='kw'>match</span> (<span class='self'>self</span>, <span class='ident'>rhs</span>) {
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Bool</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Bool</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Usize</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Usize</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>U8</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>U8</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>U16</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>U16</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>U32</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>U32</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>U64</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>U64</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Isize</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Isize</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>I8</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>I8</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>I16</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>I16</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>I32</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>I32</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>I64</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>I64</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>F32</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>F32</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>OrderedFloat</span>(<span class='ident'>v0</span>) <span class='op'>==</span> <span class='ident'>OrderedFloat</span>(<span class='ident'>v1</span>) <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>F64</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>F64</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>OrderedFloat</span>(<span class='ident'>v0</span>) <span class='op'>==</span> <span class='ident'>OrderedFloat</span>(<span class='ident'>v1</span>) <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Char</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Char</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>String</span>(<span class='kw-2'>ref</span> <span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>String</span>(<span class='kw-2'>ref</span> <span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Unit</span>, <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Unit</span>) <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>UnitStruct</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>UnitStruct</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='prelude-ty'>Option</span>(<span class='kw-2'>ref</span> <span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='prelude-ty'>Option</span>(<span class='kw-2'>ref</span> <span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Newtype</span>(<span class='kw-2'>ref</span> <span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Newtype</span>(<span class='kw-2'>ref</span> <span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Seq</span>(<span class='kw-2'>ref</span> <span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Seq</span>(<span class='kw-2'>ref</span> <span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Map</span>(<span class='kw-2'>ref</span> <span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Map</span>(<span class='kw-2'>ref</span> <span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Bytes</span>(<span class='kw-2'>ref</span> <span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Bytes</span>(<span class='kw-2'>ref</span> <span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            _ <span class='op'>=&gt;</span> <span class='boolval'>false</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Bool</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Bool</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Usize</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Usize</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>U8</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>U8</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>U16</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>U16</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>U32</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>U32</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>U64</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>U64</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Isize</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Isize</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>I8</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>I8</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>I16</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>I16</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>I32</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>I32</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>I64</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>I64</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>F32</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>F32</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>OrderedFloat</span>(<span class='ident'>v0</span>) <span class='op'>==</span> <span class='ident'>OrderedFloat</span>(<span class='ident'>v1</span>) <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>F64</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>F64</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>OrderedFloat</span>(<span class='ident'>v0</span>) <span class='op'>==</span> <span class='ident'>OrderedFloat</span>(<span class='ident'>v1</span>) <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Char</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Char</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>String</span>(<span class='kw-2'>ref</span> <span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>String</span>(<span class='kw-2'>ref</span> <span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Unit</span>, <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Unit</span>) <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>UnitStruct</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>UnitStruct</span>(<span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='prelude-ty'>Option</span>(<span class='kw-2'>ref</span> <span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='prelude-ty'>Option</span>(<span class='kw-2'>ref</span> <span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Newtype</span>(<span class='kw-2'>ref</span> <span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Newtype</span>(<span class='kw-2'>ref</span> <span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Seq</span>(<span class='kw-2'>ref</span> <span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Seq</span>(<span class='kw-2'>ref</span> <span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Map</span>(<span class='kw-2'>ref</span> <span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Map</span>(<span class='kw-2'>ref</span> <span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Bytes</span>(<span class='kw-2'>ref</span> <span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Bytes</span>(<span class='kw-2'>ref</span> <span class='ident'>v1</span>)) <span class='kw'>if</span> <span class='ident'>v0</span> <span class='op'>==</span> <span class='ident'>v1</span> <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            _ <span class='op'>=&gt;</span> <span class='bool-val'>false</span>,
         }
     }
 }
 
 <span class='kw'>impl</span> <span class='ident'>PartialOrd</span> <span class='kw'>for</span> <span class='ident'>Value</span> {
-    <span class='kw'>fn</span> <span class='ident'>partial_cmp</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='kw-2'>&amp;</span><span class='kw'>Self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Ordering</span><span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>partial_cmp</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='kw-2'>&amp;</span><span class='self'>Self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Ordering</span><span class='op'>&gt;</span> {
         <span class='kw'>match</span> (<span class='self'>self</span>, <span class='ident'>rhs</span>) {
             (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Bool</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Bool</span>(<span class='kw-2'>ref</span> <span class='ident'>v1</span>)) <span class='op'>=&gt;</span> <span class='ident'>v0</span>.<span class='ident'>partial_cmp</span>(<span class='ident'>v1</span>),
             (<span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Usize</span>(<span class='ident'>v0</span>), <span class='kw-2'>&amp;</span><span class='ident'>Value</span>::<span class='ident'>Usize</span>(<span class='kw-2'>ref</span> <span class='ident'>v1</span>)) <span class='op'>=&gt;</span> <span class='ident'>v0</span>.<span class='ident'>partial_cmp</span>(<span class='ident'>v1</span>),
@@ -839,7 +942,7 @@
 
 <span class='kw'>impl</span> <span class='ident'>Eq</span> <span class='kw'>for</span> <span class='ident'>Value</span> { }
 <span class='kw'>impl</span> <span class='ident'>Ord</span> <span class='kw'>for</span> <span class='ident'>Value</span> {
-    <span class='kw'>fn</span> <span class='ident'>cmp</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='kw-2'>&amp;</span><span class='kw'>Self</span>) <span class='op'>-&gt;</span> <span class='ident'>Ordering</span> {
+    <span class='kw'>fn</span> <span class='ident'>cmp</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='kw-2'>&amp;</span><span class='self'>Self</span>) <span class='op'>-&gt;</span> <span class='ident'>Ordering</span> {
         <span class='self'>self</span>.<span class='ident'>partial_cmp</span>(<span class='ident'>rhs</span>).<span class='ident'>expect</span>(<span class='string'>&quot;total ordering&quot;</span>)
     }
 }
@@ -955,7 +1058,7 @@
 
 
 <span class='kw'>impl</span> <span class='ident'>Deserialize</span> <span class='kw'>for</span> <span class='ident'>Value</span> {
-    <span class='kw'>fn</span> <span class='ident'>deserialize</span><span class='op'>&lt;</span><span class='ident'>D</span>: <span class='ident'>de</span>::<span class='ident'>Deserializer</span><span class='op'>&gt;</span>(<span class='ident'>d</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>D</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='kw'>Self</span>, <span class='ident'>D</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>deserialize</span><span class='op'>&lt;</span><span class='ident'>D</span>: <span class='ident'>de</span>::<span class='ident'>Deserializer</span><span class='op'>&gt;</span>(<span class='ident'>d</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>D</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='self'>Self</span>, <span class='ident'>D</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
         <span class='ident'>d</span>.<span class='ident'>deserialize</span>(<span class='ident'>ValueVisitor</span>)
     }
 }
@@ -995,7 +1098,7 @@
 }
 
 <span class='kw'>impl</span> <span class='ident'>Deserializer</span> {
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>value</span>: <span class='ident'>Value</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>value</span>: <span class='ident'>Value</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='ident'>Deserializer</span> {
             <span class='ident'>value</span>: <span class='prelude-val'>Some</span>(<span class='ident'>value</span>),
         }
@@ -1005,7 +1108,7 @@
 <span class='kw'>impl</span> <span class='ident'>de</span>::<span class='ident'>value</span>::<span class='ident'>ValueDeserializer</span> <span class='kw'>for</span> <span class='ident'>Value</span> {
     <span class='kw'>type</span> <span class='ident'>Deserializer</span> <span class='op'>=</span> <span class='ident'>ValueDeserializer</span>;
 
-    <span class='kw'>fn</span> <span class='ident'>into_deserializer</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Self</span>::<span class='ident'>Deserializer</span> {
+    <span class='kw'>fn</span> <span class='ident'>into_deserializer</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span>::<span class='ident'>Deserializer</span> {
         <span class='ident'>ValueDeserializer</span>(<span class='ident'>Deserializer</span>::<span class='ident'>new</span>(<span class='self'>self</span>))
     }
 }
@@ -1019,7 +1122,7 @@
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>I</span>: <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>Item</span><span class='op'>=</span>(<span class='ident'>Value</span>, <span class='ident'>Value</span>)<span class='op'>&gt;&gt;</span> <span class='ident'>de</span>::<span class='ident'>MapVisitor</span> <span class='kw'>for</span> <span class='ident'>MapVisitor</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>I</span><span class='op'>&gt;</span> {
     <span class='kw'>type</span> <span class='ident'>Error</span> <span class='op'>=</span> <span class='ident'>DeserializerError</span>;
 
-    <span class='kw'>fn</span> <span class='ident'>visit_key</span><span class='op'>&lt;</span><span class='ident'>K</span>: <span class='ident'>Deserialize</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>K</span><span class='op'>&gt;</span>, <span class='ident'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>visit_key</span><span class='op'>&lt;</span><span class='ident'>K</span>: <span class='ident'>Deserialize</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>K</span><span class='op'>&gt;</span>, <span class='self'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
         <span class='kw'>while</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>((<span class='ident'>k</span>, <span class='ident'>v</span>)) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>next</span>() {
             <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>de</span> <span class='op'>=</span> <span class='ident'>Deserializer</span>::<span class='ident'>new</span>(<span class='ident'>k</span>.<span class='ident'>clone</span>());
             <span class='kw'>return</span> <span class='kw'>match</span> <span class='ident'>Deserialize</span>::<span class='ident'>deserialize</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>de</span>) {
@@ -1038,19 +1141,19 @@
         <span class='prelude-val'>Ok</span>(<span class='prelude-val'>None</span>)
     }
 
-    <span class='kw'>fn</span> <span class='ident'>visit_value</span><span class='op'>&lt;</span><span class='ident'>V</span>: <span class='ident'>Deserialize</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>V</span>, <span class='ident'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>visit_value</span><span class='op'>&lt;</span><span class='ident'>V</span>: <span class='ident'>Deserialize</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>V</span>, <span class='self'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
         <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>value</span>.<span class='ident'>take</span>() {
             <span class='prelude-val'>Some</span>(<span class='ident'>v</span>) <span class='op'>=&gt;</span> <span class='ident'>V</span>::<span class='ident'>deserialize</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Deserializer</span>::<span class='ident'>new</span>(<span class='ident'>v</span>)),
             <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Err</span>(<span class='ident'>de</span>::<span class='ident'>Error</span>::<span class='ident'>end_of_stream</span>())
         }
     }
 
-    <span class='kw'>fn</span> <span class='ident'>end</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>end</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='self'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
         <span class='self'>self</span>.<span class='ident'>de</span>.<span class='ident'>borrow_map</span>().<span class='ident'>extend</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>iter</span>);
         <span class='prelude-val'>Ok</span>(())
     }
 
-    <span class='kw'>fn</span> <span class='ident'>missing_field</span><span class='op'>&lt;</span><span class='ident'>V</span>: <span class='ident'>Deserialize</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>field</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>V</span>, <span class='ident'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>missing_field</span><span class='op'>&lt;</span><span class='ident'>V</span>: <span class='ident'>Deserialize</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>field</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>V</span>, <span class='self'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
         <span class='kw'>struct</span> <span class='ident'>MissingFieldDeserializer</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>);
 
         <span class='kw'>impl</span> <span class='ident'>de</span>::<span class='ident'>Deserializer</span> <span class='kw'>for</span> <span class='ident'>MissingFieldDeserializer</span> {
@@ -1058,15 +1161,46 @@
 
             <span class='kw'>fn</span> <span class='ident'>deserialize</span><span class='op'>&lt;</span><span class='ident'>V</span>: <span class='ident'>de</span>::<span class='ident'>Visitor</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,
                                            <span class='ident'>_visitor</span>: <span class='ident'>V</span>)
-                                           <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>V</span>::<span class='ident'>Value</span>, <span class='ident'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
-                <span class='kw'>let</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>MissingFieldDeserializer</span>(<span class='ident'>field</span>) <span class='op'>=</span> <span class='self'>self</span>;
-                <span class='prelude-val'>Err</span>(<span class='ident'>DeserializerError</span>::<span class='ident'>MissingField</span>(<span class='ident'>field</span>))
+                                           <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>V</span>::<span class='ident'>Value</span>, <span class='self'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
+                <span class='prelude-val'>Err</span>(<span class='ident'>DeserializerError</span>::<span class='ident'>MissingField</span>(<span class='self'>self</span>.<span class='number'>0</span>))
             }
 
             <span class='kw'>fn</span> <span class='ident'>deserialize_option</span><span class='op'>&lt;</span><span class='ident'>V</span>: <span class='ident'>de</span>::<span class='ident'>Visitor</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,
                                                   <span class='kw-2'>mut</span> <span class='ident'>visitor</span>: <span class='ident'>V</span>)
-                                                  <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>V</span>::<span class='ident'>Value</span>, <span class='ident'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
+                                                  <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>V</span>::<span class='ident'>Value</span>, <span class='self'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
                 <span class='ident'>visitor</span>.<span class='ident'>visit_none</span>()
+            }
+
+            <span class='macro'>forward_to_deserialize</span><span class='macro'>!</span>{
+                <span class='ident'>deserialize_bool</span>();
+                <span class='ident'>deserialize_usize</span>();
+                <span class='ident'>deserialize_u8</span>();
+                <span class='ident'>deserialize_u16</span>();
+                <span class='ident'>deserialize_u32</span>();
+                <span class='ident'>deserialize_u64</span>();
+                <span class='ident'>deserialize_isize</span>();
+                <span class='ident'>deserialize_i8</span>();
+                <span class='ident'>deserialize_i16</span>();
+                <span class='ident'>deserialize_i32</span>();
+                <span class='ident'>deserialize_i64</span>();
+                <span class='ident'>deserialize_f32</span>();
+                <span class='ident'>deserialize_f64</span>();
+                <span class='ident'>deserialize_char</span>();
+                <span class='ident'>deserialize_str</span>();
+                <span class='ident'>deserialize_string</span>();
+                <span class='ident'>deserialize_unit</span>();
+                <span class='ident'>deserialize_seq</span>();
+                <span class='ident'>deserialize_seq_fixed_size</span>(<span class='ident'>len</span>: <span class='ident'>usize</span>);
+                <span class='ident'>deserialize_bytes</span>();
+                <span class='ident'>deserialize_map</span>();
+                <span class='ident'>deserialize_unit_struct</span>(<span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>);
+                <span class='ident'>deserialize_newtype_struct</span>(<span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>);
+                <span class='ident'>deserialize_tuple_struct</span>(<span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>, <span class='ident'>len</span>: <span class='ident'>usize</span>);
+                <span class='ident'>deserialize_struct</span>(<span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>, <span class='ident'>fields</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> [<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>]);
+                <span class='ident'>deserialize_struct_field</span>();
+                <span class='ident'>deserialize_tuple</span>(<span class='ident'>len</span>: <span class='ident'>usize</span>);
+                <span class='ident'>deserialize_enum</span>(<span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>, <span class='ident'>variants</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> [<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>]);
+                <span class='ident'>deserialize_ignored_any</span>();
             }
         }
 
@@ -1088,7 +1222,7 @@
 <span class='kw'>impl</span> <span class='ident'>de</span>::<span class='ident'>Deserializer</span> <span class='kw'>for</span> <span class='ident'>Deserializer</span> {
     <span class='kw'>type</span> <span class='ident'>Error</span> <span class='op'>=</span> <span class='ident'>DeserializerError</span>;
 
-    <span class='kw'>fn</span> <span class='ident'>deserialize</span><span class='op'>&lt;</span><span class='ident'>V</span>: <span class='ident'>de</span>::<span class='ident'>Visitor</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='kw-2'>mut</span> <span class='ident'>visitor</span>: <span class='ident'>V</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>V</span>::<span class='ident'>Value</span>, <span class='ident'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>deserialize</span><span class='op'>&lt;</span><span class='ident'>V</span>: <span class='ident'>de</span>::<span class='ident'>Visitor</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='kw-2'>mut</span> <span class='ident'>visitor</span>: <span class='ident'>V</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>V</span>::<span class='ident'>Value</span>, <span class='self'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>value</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>value</span>.<span class='ident'>take</span>() {
             <span class='kw'>match</span> <span class='ident'>value</span> {
                 <span class='ident'>Value</span>::<span class='ident'>Bool</span>(<span class='ident'>v</span>) <span class='op'>=&gt;</span> <span class='ident'>visitor</span>.<span class='ident'>visit_bool</span>(<span class='ident'>v</span>),
@@ -1129,7 +1263,7 @@
         }
     }
 
-    <span class='kw'>fn</span> <span class='ident'>deserialize_option</span><span class='op'>&lt;</span><span class='ident'>V</span>: <span class='ident'>de</span>::<span class='ident'>Visitor</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='kw-2'>mut</span> <span class='ident'>visitor</span>: <span class='ident'>V</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>V</span>::<span class='ident'>Value</span>, <span class='ident'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>deserialize_option</span><span class='op'>&lt;</span><span class='ident'>V</span>: <span class='ident'>de</span>::<span class='ident'>Visitor</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='kw-2'>mut</span> <span class='ident'>visitor</span>: <span class='ident'>V</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>V</span>::<span class='ident'>Value</span>, <span class='self'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
         <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>value</span> {
             <span class='prelude-val'>Some</span>(<span class='ident'>Value</span>::<span class='prelude-ty'>Option</span>(..)) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>deserialize</span>(<span class='ident'>visitor</span>),
             <span class='prelude-val'>Some</span>(<span class='ident'>Value</span>::<span class='ident'>Unit</span>) <span class='op'>=&gt;</span> {
@@ -1139,6 +1273,38 @@
             _ <span class='op'>=&gt;</span> <span class='ident'>visitor</span>.<span class='ident'>visit_some</span>(<span class='self'>self</span>)
         }
     }
+
+    <span class='macro'>forward_to_deserialize</span><span class='macro'>!</span>{
+                <span class='ident'>deserialize_bool</span>();
+                <span class='ident'>deserialize_usize</span>();
+                <span class='ident'>deserialize_u8</span>();
+                <span class='ident'>deserialize_u16</span>();
+                <span class='ident'>deserialize_u32</span>();
+                <span class='ident'>deserialize_u64</span>();
+                <span class='ident'>deserialize_isize</span>();
+                <span class='ident'>deserialize_i8</span>();
+                <span class='ident'>deserialize_i16</span>();
+                <span class='ident'>deserialize_i32</span>();
+                <span class='ident'>deserialize_i64</span>();
+                <span class='ident'>deserialize_f32</span>();
+                <span class='ident'>deserialize_f64</span>();
+                <span class='ident'>deserialize_char</span>();
+                <span class='ident'>deserialize_str</span>();
+                <span class='ident'>deserialize_string</span>();
+                <span class='ident'>deserialize_unit</span>();
+                <span class='ident'>deserialize_seq</span>();
+                <span class='ident'>deserialize_seq_fixed_size</span>(<span class='ident'>len</span>: <span class='ident'>usize</span>);
+                <span class='ident'>deserialize_bytes</span>();
+                <span class='ident'>deserialize_map</span>();
+                <span class='ident'>deserialize_unit_struct</span>(<span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>);
+                <span class='ident'>deserialize_newtype_struct</span>(<span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>);
+                <span class='ident'>deserialize_tuple_struct</span>(<span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>, <span class='ident'>len</span>: <span class='ident'>usize</span>);
+                <span class='ident'>deserialize_struct</span>(<span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>, <span class='ident'>fields</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> [<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>]);
+                <span class='ident'>deserialize_struct_field</span>();
+                <span class='ident'>deserialize_tuple</span>(<span class='ident'>len</span>: <span class='ident'>usize</span>);
+                <span class='ident'>deserialize_enum</span>(<span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>, <span class='ident'>variants</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> [<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>]);
+                <span class='ident'>deserialize_ignored_any</span>();
+            }
 }
 
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>ValueDeserializer</span>(<span class='ident'>Deserializer</span>);
@@ -1146,9 +1312,42 @@
 <span class='kw'>impl</span> <span class='ident'>de</span>::<span class='ident'>Deserializer</span> <span class='kw'>for</span> <span class='ident'>ValueDeserializer</span> {
     <span class='kw'>type</span> <span class='ident'>Error</span> <span class='op'>=</span> <span class='ident'>de</span>::<span class='ident'>value</span>::<span class='ident'>Error</span>;
 
-    <span class='kw'>fn</span> <span class='ident'>deserialize</span><span class='op'>&lt;</span><span class='ident'>V</span>: <span class='ident'>de</span>::<span class='ident'>Visitor</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>visitor</span>: <span class='ident'>V</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>V</span>::<span class='ident'>Value</span>, <span class='ident'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>deserialize</span><span class='op'>&lt;</span><span class='ident'>V</span>: <span class='ident'>de</span>::<span class='ident'>Visitor</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>visitor</span>: <span class='ident'>V</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>V</span>::<span class='ident'>Value</span>, <span class='self'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
         <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>deserialize</span>(<span class='ident'>visitor</span>).<span class='ident'>map_err</span>(<span class='ident'>DeserializerError</span>::<span class='ident'>into_error</span>)
     }
+
+    <span class='macro'>forward_to_deserialize</span><span class='macro'>!</span>{
+                <span class='ident'>deserialize_bool</span>();
+                <span class='ident'>deserialize_usize</span>();
+                <span class='ident'>deserialize_u8</span>();
+                <span class='ident'>deserialize_u16</span>();
+                <span class='ident'>deserialize_u32</span>();
+                <span class='ident'>deserialize_u64</span>();
+                <span class='ident'>deserialize_isize</span>();
+                <span class='ident'>deserialize_i8</span>();
+                <span class='ident'>deserialize_i16</span>();
+                <span class='ident'>deserialize_i32</span>();
+                <span class='ident'>deserialize_i64</span>();
+                <span class='ident'>deserialize_f32</span>();
+                <span class='ident'>deserialize_f64</span>();
+                <span class='ident'>deserialize_char</span>();
+                <span class='ident'>deserialize_str</span>();
+                <span class='ident'>deserialize_string</span>();
+                <span class='ident'>deserialize_unit</span>();
+                <span class='ident'>deserialize_seq</span>();
+                <span class='ident'>deserialize_seq_fixed_size</span>(<span class='ident'>len</span>: <span class='ident'>usize</span>);
+                <span class='ident'>deserialize_bytes</span>();
+                <span class='ident'>deserialize_map</span>();
+                <span class='ident'>deserialize_option</span>();
+                <span class='ident'>deserialize_unit_struct</span>(<span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>);
+                <span class='ident'>deserialize_newtype_struct</span>(<span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>);
+                <span class='ident'>deserialize_tuple_struct</span>(<span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>, <span class='ident'>len</span>: <span class='ident'>usize</span>);
+                <span class='ident'>deserialize_struct</span>(<span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>, <span class='ident'>fields</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> [<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>]);
+                <span class='ident'>deserialize_struct_field</span>();
+                <span class='ident'>deserialize_tuple</span>(<span class='ident'>len</span>: <span class='ident'>usize</span>);
+                <span class='ident'>deserialize_enum</span>(<span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>, <span class='ident'>variants</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> [<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>]);
+                <span class='ident'>deserialize_ignored_any</span>();
+            }
 }
 </pre>
 </section>
@@ -1174,6 +1373,8 @@
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
 
@@ -1194,7 +1395,7 @@
 
                 <p>
                     Search functions by type signature (e.g.
-                    <code>vec -> usize</code>)
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
                 </p>
             </div>
         </div>
@@ -1203,13 +1404,13 @@
     
 
     <script>
-        window.rootPath = "../../";
+        window.rootPath = "../../../";
         window.currentCrate = "serde_value";
         window.playgroundUrl = "";
     </script>
-    <script src="../../jquery.js"></script>
-    <script src="../../main.js"></script>
+    <script src="../../../jquery.js"></script>
+    <script src="../../../main.js"></script>
     
-    <script defer src="../../search-index.js"></script>
+    <script defer src="../../../search-index.js"></script>
 </body>
 </html>

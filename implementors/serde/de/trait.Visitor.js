@@ -1,5 +1,5 @@
 (function() {var implementors = {};
-implementors['serde_value'] = ["impl <a class='trait' href='https://serde-rs.github.io/serde/serde/serde/de/trait.Visitor.html' title='serde::de::Visitor'>Visitor</a> for <a class='struct' href='serde_value/struct.ValueVisitor.html' title='serde_value::ValueVisitor'>ValueVisitor</a>",];
+implementors["serde_value"] = ["impl <a class='trait' href='https://docs.serde.rs/serde/de/trait.Visitor.html' title='serde::de::Visitor'>Visitor</a> for <a class='struct' href='serde_value/struct.ValueVisitor.html' title='serde_value::ValueVisitor'>ValueVisitor</a>",];
 
             if (window.register_implementors) {
                 window.register_implementors(implementors);
