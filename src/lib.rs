@@ -10,6 +10,9 @@ use std::cmp::Ordering;
 use serde::{de, Deserialize, Serialize, Serializer};
 use ordered_float::OrderedFloat;
 
+#[macro_use]
+mod forward;
+
 #[derive(Debug)]
 pub enum DeserializerError {
     Custom(String),
@@ -461,14 +464,45 @@ impl<'a, I: Iterator<Item=(Value, Value)>> de::MapVisitor for MapVisitor<'a, I> 
             fn deserialize<V: de::Visitor>(&mut self,
                                            _visitor: V)
                                            -> Result<V::Value, Self::Error> {
-                let &mut MissingFieldDeserializer(field) = self;
-                Err(DeserializerError::MissingField(field))
+                Err(DeserializerError::MissingField(self.0))
             }
 
             fn deserialize_option<V: de::Visitor>(&mut self,
                                                   mut visitor: V)
                                                   -> Result<V::Value, Self::Error> {
                 visitor.visit_none()
+            }
+
+            forward_to_deserialize!{
+                deserialize_bool();
+                deserialize_usize();
+                deserialize_u8();
+                deserialize_u16();
+                deserialize_u32();
+                deserialize_u64();
+                deserialize_isize();
+                deserialize_i8();
+                deserialize_i16();
+                deserialize_i32();
+                deserialize_i64();
+                deserialize_f32();
+                deserialize_f64();
+                deserialize_char();
+                deserialize_str();
+                deserialize_string();
+                deserialize_unit();
+                deserialize_seq();
+                deserialize_seq_fixed_size(len: usize);
+                deserialize_bytes();
+                deserialize_map();
+                deserialize_unit_struct(name: &'static str);
+                deserialize_newtype_struct(name: &'static str);
+                deserialize_tuple_struct(name: &'static str, len: usize);
+                deserialize_struct(name: &'static str, fields: &'static [&'static str]);
+                deserialize_struct_field();
+                deserialize_tuple(len: usize);
+                deserialize_enum(name: &'static str, variants: &'static [&'static str]);
+                deserialize_ignored_any();
             }
         }
 
@@ -541,6 +575,38 @@ impl de::Deserializer for Deserializer {
             _ => visitor.visit_some(self)
         }
     }
+
+    forward_to_deserialize!{
+                deserialize_bool();
+                deserialize_usize();
+                deserialize_u8();
+                deserialize_u16();
+                deserialize_u32();
+                deserialize_u64();
+                deserialize_isize();
+                deserialize_i8();
+                deserialize_i16();
+                deserialize_i32();
+                deserialize_i64();
+                deserialize_f32();
+                deserialize_f64();
+                deserialize_char();
+                deserialize_str();
+                deserialize_string();
+                deserialize_unit();
+                deserialize_seq();
+                deserialize_seq_fixed_size(len: usize);
+                deserialize_bytes();
+                deserialize_map();
+                deserialize_unit_struct(name: &'static str);
+                deserialize_newtype_struct(name: &'static str);
+                deserialize_tuple_struct(name: &'static str, len: usize);
+                deserialize_struct(name: &'static str, fields: &'static [&'static str]);
+                deserialize_struct_field();
+                deserialize_tuple(len: usize);
+                deserialize_enum(name: &'static str, variants: &'static [&'static str]);
+                deserialize_ignored_any();
+            }
 }
 
 pub struct ValueDeserializer(Deserializer);
@@ -551,4 +617,37 @@ impl de::Deserializer for ValueDeserializer {
     fn deserialize<V: de::Visitor>(&mut self, visitor: V) -> Result<V::Value, Self::Error> {
         self.0.deserialize(visitor).map_err(DeserializerError::into_error)
     }
+
+    forward_to_deserialize!{
+                deserialize_bool();
+                deserialize_usize();
+                deserialize_u8();
+                deserialize_u16();
+                deserialize_u32();
+                deserialize_u64();
+                deserialize_isize();
+                deserialize_i8();
+                deserialize_i16();
+                deserialize_i32();
+                deserialize_i64();
+                deserialize_f32();
+                deserialize_f64();
+                deserialize_char();
+                deserialize_str();
+                deserialize_string();
+                deserialize_unit();
+                deserialize_seq();
+                deserialize_seq_fixed_size(len: usize);
+                deserialize_bytes();
+                deserialize_map();
+                deserialize_option();
+                deserialize_unit_struct(name: &'static str);
+                deserialize_newtype_struct(name: &'static str);
+                deserialize_tuple_struct(name: &'static str, len: usize);
+                deserialize_struct(name: &'static str, fields: &'static [&'static str]);
+                deserialize_struct_field();
+                deserialize_tuple(len: usize);
+                deserialize_enum(name: &'static str, variants: &'static [&'static str]);
+                deserialize_ignored_any();
+            }
 }
