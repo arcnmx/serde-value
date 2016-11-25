@@ -1,6 +1,6 @@
 [package]
 name = "serde-value"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["arcnmx"]
 
 description = "Serialization value trees"
