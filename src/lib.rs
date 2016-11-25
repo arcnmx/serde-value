@@ -175,32 +175,32 @@ impl PartialEq for Value {
     }
 }
 
-impl PartialOrd for Value {
-    fn partial_cmp(&self, rhs: &Self) -> Option<Ordering> {
+impl Ord for Value {
+    fn cmp(&self, rhs: &Self) -> Ordering {
         match (self, rhs) {
-            (&Value::Bool(v0), &Value::Bool(ref v1)) => v0.partial_cmp(v1),
-            (&Value::Usize(v0), &Value::Usize(ref v1)) => v0.partial_cmp(v1),
-            (&Value::U8(v0), &Value::U8(ref v1)) => v0.partial_cmp(v1),
-            (&Value::U16(v0), &Value::U16(ref v1)) => v0.partial_cmp(v1),
-            (&Value::U32(v0), &Value::U32(ref v1)) => v0.partial_cmp(v1),
-            (&Value::U64(v0), &Value::U64(ref v1)) => v0.partial_cmp(v1),
-            (&Value::Isize(v0), &Value::Isize(ref v1)) => v0.partial_cmp(v1),
-            (&Value::I8(v0), &Value::I8(ref v1)) => v0.partial_cmp(v1),
-            (&Value::I16(v0), &Value::I16(ref v1)) => v0.partial_cmp(v1),
-            (&Value::I32(v0), &Value::I32(ref v1)) => v0.partial_cmp(v1),
-            (&Value::I64(v0), &Value::I64(ref v1)) => v0.partial_cmp(v1),
-            (&Value::F32(v0), &Value::F32(v1)) => Some(OrderedFloat(v0).cmp(&OrderedFloat(v1))),
-            (&Value::F64(v0), &Value::F64(v1)) => Some(OrderedFloat(v0).cmp(&OrderedFloat(v1))),
-            (&Value::Char(v0), &Value::Char(ref v1)) => v0.partial_cmp(v1),
-            (&Value::String(ref v0), &Value::String(ref v1)) => v0.partial_cmp(v1),
-            (&Value::Unit, &Value::Unit) => Some(Ordering::Equal),
-            (&Value::UnitStruct(v0), &Value::UnitStruct(v1)) => v0.partial_cmp(v1),
-            (&Value::Option(ref v0), &Value::Option(ref v1)) => v0.partial_cmp(v1),
-            (&Value::Newtype(ref v0), &Value::Newtype(ref v1)) => v0.partial_cmp(v1),
-            (&Value::Seq(ref v0), &Value::Seq(ref v1)) => v0.partial_cmp(v1),
-            (&Value::Map(ref v0), &Value::Map(ref v1)) => v0.partial_cmp(v1),
-            (&Value::Bytes(ref v0), &Value::Bytes(ref v1)) => v0.partial_cmp(v1),
-            (ref v0, ref v1) => v0.discriminant().partial_cmp(&v1.discriminant()),
+            (&Value::Bool(v0), &Value::Bool(ref v1)) => v0.cmp(v1),
+            (&Value::Usize(v0), &Value::Usize(ref v1)) => v0.cmp(v1),
+            (&Value::U8(v0), &Value::U8(ref v1)) => v0.cmp(v1),
+            (&Value::U16(v0), &Value::U16(ref v1)) => v0.cmp(v1),
+            (&Value::U32(v0), &Value::U32(ref v1)) => v0.cmp(v1),
+            (&Value::U64(v0), &Value::U64(ref v1)) => v0.cmp(v1),
+            (&Value::Isize(v0), &Value::Isize(ref v1)) => v0.cmp(v1),
+            (&Value::I8(v0), &Value::I8(ref v1)) => v0.cmp(v1),
+            (&Value::I16(v0), &Value::I16(ref v1)) => v0.cmp(v1),
+            (&Value::I32(v0), &Value::I32(ref v1)) => v0.cmp(v1),
+            (&Value::I64(v0), &Value::I64(ref v1)) => v0.cmp(v1),
+            (&Value::F32(v0), &Value::F32(v1)) => OrderedFloat(v0).cmp(&OrderedFloat(v1)),
+            (&Value::F64(v0), &Value::F64(v1)) => OrderedFloat(v0).cmp(&OrderedFloat(v1)),
+            (&Value::Char(v0), &Value::Char(ref v1)) => v0.cmp(v1),
+            (&Value::String(ref v0), &Value::String(ref v1)) => v0.cmp(v1),
+            (&Value::Unit, &Value::Unit) => Ordering::Equal,
+            (&Value::UnitStruct(v0), &Value::UnitStruct(v1)) => v0.cmp(v1),
+            (&Value::Option(ref v0), &Value::Option(ref v1)) => v0.cmp(v1),
+            (&Value::Newtype(ref v0), &Value::Newtype(ref v1)) => v0.cmp(v1),
+            (&Value::Seq(ref v0), &Value::Seq(ref v1)) => v0.cmp(v1),
+            (&Value::Map(ref v0), &Value::Map(ref v1)) => v0.cmp(v1),
+            (&Value::Bytes(ref v0), &Value::Bytes(ref v1)) => v0.cmp(v1),
+            (ref v0, ref v1) => v0.discriminant().cmp(&v1.discriminant()),
         }
     }
 }
@@ -243,9 +243,9 @@ impl Value {
 }
 
 impl Eq for Value { }
-impl Ord for Value {
-    fn cmp(&self, rhs: &Self) -> Ordering {
-        self.partial_cmp(rhs).expect("total ordering")
+impl PartialOrd for Value {
+    fn partial_cmp(&self, rhs: &Self) -> Option<Ordering> {
+        Some(self.cmp(rhs))
     }
 }
 
