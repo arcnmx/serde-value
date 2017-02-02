@@ -9,8 +9,8 @@
 
     <title>forward.rs.html -- source</title>
 
-    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
-    <link rel="stylesheet" type="text/css" href="../../../main.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
     
 
     
@@ -94,20 +94,20 @@
 
     (<span class='ident'>func</span>: <span class='ident'>deserialize_enum</span> ( $( <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>arg</span>:<span class='ident'>ident</span> : <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>ty</span>:<span class='ident'>ty</span> ),<span class='op'>*</span> );) <span class='op'>=&gt;</span> {
         <span class='kw'>fn</span> <span class='ident'>deserialize_enum</span><span class='op'>&lt;</span><span class='ident'>V</span><span class='op'>&gt;</span>(
-            <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,
+            <span class='self'>self</span>,
             $(_: <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>ty</span>,)<span class='op'>*</span>
             <span class='ident'>_visitor</span>: <span class='ident'>V</span>,
         ) <span class='op'>-&gt;</span> ::<span class='ident'>std</span>::<span class='ident'>result</span>::<span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>V</span>::<span class='ident'>Value</span>, <span class='self'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span>
-            <span class='kw'>where</span> <span class='ident'>V</span>: ::<span class='ident'>serde</span>::<span class='ident'>de</span>::<span class='ident'>EnumVisitor</span>
+            <span class='kw'>where</span> <span class='ident'>V</span>: ::<span class='ident'>serde</span>::<span class='ident'>de</span>::<span class='ident'>Visitor</span>
         {
-            <span class='prelude-val'>Err</span>(::<span class='ident'>serde</span>::<span class='ident'>de</span>::<span class='ident'>Error</span>::<span class='ident'>invalid_type</span>(::<span class='ident'>serde</span>::<span class='ident'>de</span>::<span class='ident'>Type</span>::<span class='ident'>Enum</span>))
+            <span class='prelude-val'>Err</span>(::<span class='ident'>serde</span>::<span class='ident'>de</span>::<span class='ident'>Error</span>::<span class='ident'>invalid_type</span>(::<span class='ident'>serde</span>::<span class='ident'>de</span>::<span class='ident'>Unexpected</span>::<span class='ident'>Enum</span>, <span class='kw-2'>&amp;</span><span class='string'>&quot;any value&quot;</span>))
         }
     };
 
     (<span class='ident'>func</span>: <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>:<span class='ident'>ident</span> ( $( <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>arg</span>:<span class='ident'>ident</span> : <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>ty</span>:<span class='ident'>ty</span> ),<span class='op'>*</span> );) <span class='op'>=&gt;</span> {
         <span class='attribute'>#[<span class='ident'>inline</span>]</span>
         <span class='kw'>fn</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span><span class='op'>&lt;</span><span class='ident'>V</span><span class='op'>&gt;</span>(
-            <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,
+            <span class='self'>self</span>,
             $(_: <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>ty</span>,)<span class='op'>*</span>
             <span class='ident'>visitor</span>: <span class='ident'>V</span>,
         ) <span class='op'>-&gt;</span> ::<span class='ident'>std</span>::<span class='ident'>result</span>::<span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>V</span>::<span class='ident'>Value</span>, <span class='self'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span>
@@ -172,13 +172,11 @@
     
 
     <script>
-        window.rootPath = "../../../";
+        window.rootPath = "../../";
         window.currentCrate = "serde_value";
-        window.playgroundUrl = "";
     </script>
-    <script src="../../../jquery.js"></script>
-    <script src="../../../main.js"></script>
-    
-    <script defer src="../../../search-index.js"></script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
 </body>
 </html>
