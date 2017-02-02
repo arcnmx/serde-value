@@ -17,6 +17,7 @@ before_script:
     - curl -L https://github.com/arcnmx/ci/archive/master.tar.gz | tar -xzC $HOME && . $HOME/ci-master/src
 
 script:
+    - cargo build
     - cargo test
 
 deploy:
