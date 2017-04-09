@@ -441,7 +441,6 @@ impl de::Visitor for ValueVisitor {
     }
 }
 
-
 impl Deserialize for Value {
     fn deserialize<D: de::Deserializer>(d: D) -> Result<Self, D::Error> {
         d.deserialize(ValueVisitor)
@@ -650,7 +649,6 @@ struct VariantDeserializer {
 impl de::VariantVisitor for VariantDeserializer {
     type Error = DeserializerError;
 
-
     fn visit_unit(self) -> Result<(), Self::Error> {
         match self.value {
             Some(value) => de::Deserialize::deserialize(value),
@@ -712,19 +710,24 @@ fn smoke_test() {
         ].into_iter().collect()),
     ]))));
 
-    // assert that the value remains unchanged through {de,}serialization
+    // assert that the value remains unchanged through deserialization
     let value_de = Value::deserialize(value.clone()).unwrap();
     assert_eq!(value_de, value);
 }
 
 #[test]
 fn deserialize_into_enum() {
-    #[derive(Deserialize)]
+    #[derive(Deserialize, Debug, PartialEq, Eq)]
     enum Foo {
         Bar,
-        Baz,
+        Baz(u8),
     }
 
-    let value = Value::String("Bar".to_string());
-    Foo::deserialize(value).unwrap();
+    let value = Value::String("Bar".into());
+    assert_eq!(Foo::deserialize(value).unwrap(), Foo::Bar);
+
+    let value = Value::Map(vec![
+        (Value::String("Baz".into()), Value::U8(1))
+    ].into_iter().collect());
+    assert_eq!(Foo::deserialize(value).unwrap(), Foo::Baz(1));
 }
