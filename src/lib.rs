@@ -3,6 +3,10 @@
 extern crate serde;
 extern crate ordered_float;
 
+#[cfg(test)]
+#[macro_use]
+extern crate serde_derive;
+
 use std::collections::BTreeMap;
 use std::error::Error;
 use std::fmt;
@@ -300,6 +304,30 @@ impl Value {
         }
     }
 
+    fn unexpected(&self) -> de::Unexpected {
+        match *self {
+            Value::Bool(b) => de::Unexpected::Bool(b),
+            Value::U8(n) => de::Unexpected::Unsigned(n as u64),
+            Value::U16(n) => de::Unexpected::Unsigned(n as u64),
+            Value::U32(n) => de::Unexpected::Unsigned(n as u64),
+            Value::U64(n) => de::Unexpected::Unsigned(n),
+            Value::I8(n) => de::Unexpected::Signed(n as i64),
+            Value::I16(n) => de::Unexpected::Signed(n as i64),
+            Value::I32(n) => de::Unexpected::Signed(n as i64),
+            Value::I64(n) => de::Unexpected::Signed(n),
+            Value::F32(n) => de::Unexpected::Float(n as f64),
+            Value::F64(n) => de::Unexpected::Float(n),
+            Value::Char(c) => de::Unexpected::Char(c),
+            Value::String(ref s) => de::Unexpected::Str(s),
+            Value::Unit => de::Unexpected::Unit,
+            Value::Option(_) => de::Unexpected::Option,
+            Value::Newtype(_) => de::Unexpected::NewtypeStruct,
+            Value::Seq(_) => de::Unexpected::Seq,
+            Value::Map(_) => de::Unexpected::Map,
+            Value::Bytes(ref b) => de::Unexpected::Bytes(b),
+        }
+    }
+
     pub fn deserialize_into<T: Deserialize>(self) -> Result<T, DeserializerError> {
         T::deserialize(self)
     }
@@ -530,6 +558,41 @@ impl de::Deserializer for Value {
         }
     }
 
+    fn deserialize_enum<V: de::Visitor>(self,
+                                        _name: &str,
+                                        _variants: &'static [&'static str],
+                                        visitor: V)
+                                        -> Result<V::Value, Self::Error> {
+        let (variant, value) = match self {
+            Value::Map(value) => {
+                let mut iter = value.into_iter();
+                let (variant, value) = match iter.next() {
+                    Some(v) => v,
+                    None => {
+                        return Err(de::Error::invalid_value(de::Unexpected::Map,
+                                                            &"map with a single key"));
+                    }
+                };
+                // enums are encoded as maps with a single key:value pair
+                if iter.next().is_some() {
+                    return Err(de::Error::invalid_value(de::Unexpected::Map,
+                                                        &"map with a single key"));
+                }
+                (variant, Some(value))
+            }
+            Value::String(variant) => (Value::String(variant), None),
+            other => {
+                return Err(de::Error::invalid_type(other.unexpected(), &"string or map"));
+            }
+        };
+
+        let d = EnumDeserializer {
+            variant: variant,
+            value: value,
+        };
+        visitor.visit_enum(d)
+    }
+
     forward_to_deserialize!{
                 deserialize_bool();
                 deserialize_u8();
@@ -557,9 +620,80 @@ impl de::Deserializer for Value {
                 deserialize_struct(name: &'static str, fields: &'static [&'static str]);
                 deserialize_struct_field();
                 deserialize_tuple(len: usize);
-                deserialize_enum(name: &'static str, variants: &'static [&'static str]);
                 deserialize_ignored_any();
             }
+}
+
+struct EnumDeserializer {
+    variant: Value,
+    value: Option<Value>,
+}
+
+impl de::EnumVisitor for EnumDeserializer {
+    type Error = DeserializerError;
+    type Variant = VariantDeserializer;
+
+    fn visit_variant_seed<V>(self, seed: V) -> Result<(V::Value, VariantDeserializer), Self::Error>
+        where V: de::DeserializeSeed
+    {
+        let visitor = VariantDeserializer {
+            value: self.value,
+        };
+        seed.deserialize(self.variant).map(|v| (v, visitor))
+    }
+}
+
+struct VariantDeserializer {
+    value: Option<Value>,
+}
+
+impl de::VariantVisitor for VariantDeserializer {
+    type Error = DeserializerError;
+
+
+    fn visit_unit(self) -> Result<(), Self::Error> {
+        match self.value {
+            Some(value) => de::Deserialize::deserialize(value),
+            None => Ok(()),
+        }
+    }
+
+    fn visit_newtype_seed<T>(self, seed: T) -> Result<T::Value, Self::Error>
+        where T: de::DeserializeSeed
+    {
+        match self.value {
+            Some(value) => seed.deserialize(value),
+            None => Err(de::Error::invalid_type(de::Unexpected::UnitVariant, &"newtype variant")),
+        }
+    }
+
+    fn visit_tuple<V>(self, _len: usize, visitor: V) -> Result<V::Value, Self::Error>
+        where V: de::Visitor
+    {
+        match self.value {
+            Some(Value::Seq(v)) => {
+                de::Deserializer::deserialize(de::value::SeqDeserializer::new(v.into_iter()), visitor)
+            }
+            Some(other) => Err(de::Error::invalid_type(other.unexpected(), &"tuple variant")),
+            None => Err(de::Error::invalid_type(de::Unexpected::UnitVariant, &"tuple variant")),
+        }
+    }
+
+    fn visit_struct<V>(self,
+                       _fields: &'static [&'static str],
+                       visitor: V)
+                       -> Result<V::Value, Self::Error>
+        where V: de::Visitor
+    {
+        match self.value {
+            Some(Value::Map(v)) => {
+                de::Deserializer::deserialize(de::value::MapDeserializer::new(v.into_iter()),
+                                              visitor)
+            }
+            Some(other) => Err(de::Error::invalid_type(other.unexpected(), &"struct variant")),
+            None => Err(de::Error::invalid_type(de::Unexpected::UnitVariant, &"struct variant")),
+        }
+    }
 }
 
 #[test]
@@ -581,4 +715,16 @@ fn smoke_test() {
     // assert that the value remains unchanged through {de,}serialization
     let value_de = Value::deserialize(value.clone()).unwrap();
     assert_eq!(value_de, value);
+}
+
+#[test]
+fn deserialize_into_enum() {
+    #[derive(Deserialize)]
+    enum Foo {
+        Bar,
+        Baz,
+    }
+
+    let value = Value::String("Bar".to_string());
+    Foo::deserialize(value).unwrap();
 }
