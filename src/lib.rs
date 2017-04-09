@@ -1,5 +1,6 @@
 #![doc(html_root_url="https://arcnmx.github.io/serde-value")]
 
+#[macro_use]
 extern crate serde;
 extern crate ordered_float;
 
@@ -14,9 +15,6 @@ use std::cmp::Ordering;
 use serde::{de, Deserialize, Serialize, Serializer};
 use serde::de::DeserializeSeed;
 use ordered_float::OrderedFloat;
-
-#[macro_use]
-mod forward;
 
 #[derive(Debug)]
 pub enum Unexpected {
@@ -592,35 +590,11 @@ impl de::Deserializer for Value {
         visitor.visit_enum(d)
     }
 
-    forward_to_deserialize!{
-                deserialize_bool();
-                deserialize_u8();
-                deserialize_u16();
-                deserialize_u32();
-                deserialize_u64();
-                deserialize_i8();
-                deserialize_i16();
-                deserialize_i32();
-                deserialize_i64();
-                deserialize_f32();
-                deserialize_f64();
-                deserialize_char();
-                deserialize_str();
-                deserialize_string();
-                deserialize_unit();
-                deserialize_seq();
-                deserialize_seq_fixed_size(len: usize);
-                deserialize_bytes();
-                deserialize_byte_buf();
-                deserialize_map();
-                deserialize_unit_struct(name: &'static str);
-                deserialize_newtype_struct(name: &'static str);
-                deserialize_tuple_struct(name: &'static str, len: usize);
-                deserialize_struct(name: &'static str, fields: &'static [&'static str]);
-                deserialize_struct_field();
-                deserialize_tuple(len: usize);
-                deserialize_ignored_any();
-            }
+    forward_to_deserialize! {
+        bool u8 u16 u32 u64 i8 i16 i32 i64 f32 f64 char str string unit
+        seq seq_fixed_size bytes byte_buf map unit_struct newtype_struct
+        tuple_struct struct struct_field tuple ignored_any
+    }
 }
 
 struct EnumDeserializer {
