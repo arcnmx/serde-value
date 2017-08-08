@@ -14,8 +14,10 @@ use serde::{Deserialize, Serialize, Serializer};
 use ordered_float::OrderedFloat;
 
 pub use de::*;
+pub use ser::*;
 
 mod de;
+mod ser;
 
 #[derive(Clone, Debug)]
 pub enum Value {
