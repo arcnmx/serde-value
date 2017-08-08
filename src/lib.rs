@@ -10,7 +10,7 @@ extern crate serde_derive;
 
 use std::collections::BTreeMap;
 use std::cmp::Ordering;
-use serde::{Deserialize, Serialize, Serializer};
+use serde::Deserialize;
 use ordered_float::OrderedFloat;
 
 pub use de::*;
