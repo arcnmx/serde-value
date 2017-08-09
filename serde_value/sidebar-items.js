@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["DeserializerError",""],["Unexpected",""],["Value",""]],"struct":[["ValueVisitor",""]]});
+initSidebarItems({"enum":[["DeserializerError",""],["SerializerError",""],["Unexpected",""],["Value",""]],"fn":[["to_value",""]],"struct":[["ValueVisitor",""]]});
