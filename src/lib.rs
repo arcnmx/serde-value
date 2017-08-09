@@ -163,7 +163,7 @@ impl PartialOrd for Value {
 }
 
 #[test]
-fn smoke_test() {
+fn de_smoke_test() {
     // some convoluted Value
     let value = Value::Option(Some(Box::new(Value::Seq(vec![
         Value::U16(8),
@@ -184,6 +184,31 @@ fn smoke_test() {
 }
 
 #[test]
+fn ser_smoke_test() {
+    #[derive(Serialize)]
+    struct Foo {
+        a: u32,
+        b: String,
+        c: Vec<bool>,
+    }
+
+    let foo = Foo {
+        a: 15,
+        b: "hello".into(),
+        c: vec![true, false],
+    };
+
+    let expected = Value::Map(vec![
+        (Value::String("a".into()), Value::U32(15)),
+        (Value::String("b".into()), Value::String("hello".into())),
+        (Value::String("c".into()), Value::Seq(vec![Value::Bool(true), Value::Bool(false)])),
+    ].into_iter().collect());
+
+    let value = to_value(&foo).unwrap();
+    assert_eq!(expected, value);
+}
+
+#[test]
 fn deserialize_into_enum() {
     #[derive(Deserialize, Debug, PartialEq, Eq)]
     enum Foo {
@@ -199,3 +224,4 @@ fn deserialize_into_enum() {
     ].into_iter().collect());
     assert_eq!(Foo::deserialize(value).unwrap(), Foo::Baz(1));
 }
+
