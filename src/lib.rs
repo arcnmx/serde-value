@@ -306,3 +306,30 @@ fn deserialize_inside_deserialize_impl() {
     ].into_iter().collect());
     let _ = Event::deserialize(input).expect_err("expected deserializing bad ADDED event to fail");
 }
+
+#[test]
+fn deserialize_newtype() {
+    #[derive(Debug, Deserialize, PartialEq)]
+    struct Foo(i32);
+
+    let input = Value::I32(5);
+    let foo = Foo::deserialize(input).unwrap();
+    assert_eq!(foo, Foo(5));
+}
+
+#[test]
+fn deserialize_newtype2() {
+    #[derive(Debug, Deserialize, PartialEq)]
+    struct Foo(i32);
+
+    #[derive(Debug, Deserialize, PartialEq)]
+    struct Bar {
+        foo: Foo,
+    }
+
+    let input = Value::Map(vec![
+        (Value::String("foo".to_owned()), Value::I32(5))
+    ].into_iter().collect());
+    let bar = Bar::deserialize(input).unwrap();
+    assert_eq!(bar, Bar { foo: Foo(5) });
+}

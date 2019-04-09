@@ -402,9 +402,19 @@ impl<'de, E> de::Deserializer<'de> for ValueDeserializer<E> where E: de::Error {
         visitor.visit_enum(d)
     }
 
+    fn deserialize_newtype_struct<V: de::Visitor<'de>>(self,
+                                                       _name: &'static str,
+                                                       visitor: V)
+                                                       -> Result<V::Value, Self::Error> {
+        match self.value {
+            Value::Newtype(v) => visitor.visit_newtype_struct(ValueDeserializer::new(*v)),
+            _ => visitor.visit_newtype_struct(self),
+        }
+    }
+
     forward_to_deserialize_any! {
         bool u8 u16 u32 u64 i8 i16 i32 i64 f32 f64 char str string unit
-        seq bytes byte_buf map unit_struct newtype_struct
+        seq bytes byte_buf map unit_struct
         tuple_struct struct tuple ignored_any identifier
     }
 }
@@ -436,9 +446,16 @@ impl<'de> de::Deserializer<'de> for Value {
         ValueDeserializer::new(self).deserialize_enum(name, variants, visitor)
     }
 
+    fn deserialize_newtype_struct<V: de::Visitor<'de>>(self,
+                                                       name: &'static str,
+                                                       visitor: V)
+                                                       -> Result<V::Value, Self::Error> {
+        ValueDeserializer::new(self).deserialize_newtype_struct(name, visitor)
+    }
+
     forward_to_deserialize_any! {
         bool u8 u16 u32 u64 i8 i16 i32 i64 f32 f64 char str string unit
-        seq bytes byte_buf map unit_struct newtype_struct
+        seq bytes byte_buf map unit_struct
         tuple_struct struct tuple ignored_any identifier
     }
 }
