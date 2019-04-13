@@ -307,7 +307,7 @@ impl<'de> de::IntoDeserializer<'de, DeserializerError> for Value {
 
 pub struct ValueDeserializer<E> {
     value: Value,
-    error: PhantomData<E>,
+    error: PhantomData<fn() -> E>,
 }
 
 impl<E> ValueDeserializer<E> {
@@ -446,7 +446,7 @@ impl<'de> de::Deserializer<'de> for Value {
 struct EnumDeserializer<E> {
     variant: Value,
     value: Option<Value>,
-    error: PhantomData<E>,
+    error: PhantomData<fn() -> E>,
 }
 
 impl<'de, E> de::EnumAccess<'de> for EnumDeserializer<E> where E: de::Error {
@@ -466,7 +466,7 @@ impl<'de, E> de::EnumAccess<'de> for EnumDeserializer<E> where E: de::Error {
 
 struct VariantDeserializer<E> {
     value: Option<Value>,
-    error: PhantomData<E>,
+    error: PhantomData<fn() -> E>,
 }
 
 impl<'de, E> de::VariantAccess<'de> for VariantDeserializer<E> where E: de::Error {
