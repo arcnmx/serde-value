@@ -1,2 +1,2 @@
 var ALIASES = {};
-ALIASES['serde_value'] = {};
+ALIASES["serde_value"] = {};
