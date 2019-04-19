@@ -1,10 +1,9 @@
 use serde::de;
-use std::collections::BTreeMap;
 use std::error::Error;
 use std::fmt;
 use std::marker::PhantomData;
 
-use Value;
+use {Value, MapImpl};
 
 #[derive(Debug)]
 pub enum Unexpected {
@@ -275,7 +274,7 @@ impl<'de> de::Visitor<'de> for ValueVisitor {
     }
 
     fn visit_map<V: de::MapAccess<'de>>(self, mut visitor: V) -> Result<Value, V::Error> {
-        let mut values = BTreeMap::new();
+        let mut values = MapImpl::new();
         while let Some((key, value)) = try!(visitor.next_entry()) {
             values.insert(key, value);
         }

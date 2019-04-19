@@ -3,12 +3,19 @@
 #[macro_use]
 extern crate serde;
 extern crate ordered_float;
+#[cfg(feature = "preserve_order")]
+extern crate indexmap;
 
 #[cfg(test)]
 #[macro_use]
 extern crate serde_derive;
 
-use std::collections::BTreeMap;
+#[cfg(feature = "preserve_order")]
+pub(crate) use indexmap::IndexMap as MapImpl;
+
+#[cfg(not(feature = "preserve_order"))]
+pub(crate) use std::collections::BTreeMap as MapImpl;
+
 use std::cmp::Ordering;
 use std::hash::{Hash, Hasher};
 use serde::Deserialize;
@@ -44,7 +51,7 @@ pub enum Value {
     Option(Option<Box<Value>>),
     Newtype(Box<Value>),
     Seq(Vec<Value>),
-    Map(BTreeMap<Value, Value>),
+    Map(MapImpl<Value, Value>),
     Bytes(Vec<u8>),
 }
 
@@ -72,7 +79,17 @@ impl Hash for Value {
             Value::Option(ref v) => v.hash(hasher),
             Value::Newtype(ref v) => v.hash(hasher),
             Value::Seq(ref v) => v.hash(hasher),
-            Value::Map(ref v) => v.hash(hasher),
+            Value::Map(ref v) => {
+                #[cfg(feature = "preserve_order")] {
+                    for (key, value) in v.iter() {
+                        key.hash(hasher);
+                        value.hash(hasher);
+                    }
+                }
+                #[cfg(not(feature = "preserve_order"))] {
+                    v.hash(hasher)
+                }
+            }
             Value::Bytes(ref v) => v.hash(hasher),
         }
     }
@@ -125,7 +142,14 @@ impl Ord for Value {
             (&Value::Option(ref v0), &Value::Option(ref v1)) => v0.cmp(v1),
             (&Value::Newtype(ref v0), &Value::Newtype(ref v1)) => v0.cmp(v1),
             (&Value::Seq(ref v0), &Value::Seq(ref v1)) => v0.cmp(v1),
-            (&Value::Map(ref v0), &Value::Map(ref v1)) => v0.cmp(v1),
+            (&Value::Map(ref v0), &Value::Map(ref v1)) => {
+                #[cfg(feature = "preserve_order")] {
+                    v0.iter().cmp(v1.iter())
+                }
+                #[cfg(not(feature = "preserve_order"))] {
+                    v0.cmp(v1)
+                }
+            },
             (&Value::Bytes(ref v0), &Value::Bytes(ref v1)) => v0.cmp(v1),
             (ref v0, ref v1) => v0.discriminant().cmp(&v1.discriminant()),
         }
