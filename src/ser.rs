@@ -134,24 +134,20 @@ impl ser::Serializer for Serializer {
         Ok(Value::Option(None))
     }
 
-    fn serialize_some<T: ?Sized>(
-        self,
-        value: &T
-    ) -> Result<Self::Ok, Self::Error>
+    fn serialize_some<T: ?Sized>(self, value: &T) -> Result<Self::Ok, Self::Error>
     where
-        T: ser::Serialize
+        T: ser::Serialize,
     {
-        value.serialize(Serializer).map(|v| Value::Option(Some(Box::new(v))))
+        value
+            .serialize(Serializer)
+            .map(|v| Value::Option(Some(Box::new(v))))
     }
 
     fn serialize_unit(self) -> Result<Self::Ok, Self::Error> {
         Ok(Value::Unit)
     }
 
-    fn serialize_unit_struct(
-        self,
-        _name: &'static str
-    ) -> Result<Self::Ok, Self::Error> {
+    fn serialize_unit_struct(self, _name: &'static str) -> Result<Self::Ok, Self::Error> {
         Ok(Value::Unit)
     }
 
@@ -159,7 +155,7 @@ impl ser::Serializer for Serializer {
         self,
         _name: &'static str,
         _variant_index: u32,
-        _variant: &'static str
+        _variant: &'static str,
     ) -> Result<Self::Ok, Self::Error> {
         Ok(Value::Unit)
     }
@@ -167,12 +163,14 @@ impl ser::Serializer for Serializer {
     fn serialize_newtype_struct<T: ?Sized>(
         self,
         _name: &'static str,
-        value: &T
+        value: &T,
     ) -> Result<Self::Ok, Self::Error>
     where
-        T: ser::Serialize
+        T: ser::Serialize,
     {
-        value.serialize(Serializer).map(|v| Value::Newtype(Box::new(v)))
+        value
+            .serialize(Serializer)
+            .map(|v| Value::Newtype(Box::new(v)))
     }
 
     fn serialize_newtype_variant<T: ?Sized>(
@@ -180,32 +178,28 @@ impl ser::Serializer for Serializer {
         _name: &'static str,
         _variant_index: u32,
         _variant: &'static str,
-        value: &T
+        value: &T,
     ) -> Result<Self::Ok, Self::Error>
     where
-        T: ser::Serialize
+        T: ser::Serialize,
     {
-        value.serialize(Serializer).map(|v| Value::Newtype(Box::new(v)))
+        value
+            .serialize(Serializer)
+            .map(|v| Value::Newtype(Box::new(v)))
     }
 
-    fn serialize_seq(
-        self,
-        _len: Option<usize>
-    ) -> Result<Self::SerializeSeq, Self::Error> {
+    fn serialize_seq(self, _len: Option<usize>) -> Result<Self::SerializeSeq, Self::Error> {
         Ok(SerializeSeq(vec![]))
     }
 
-    fn serialize_tuple(
-        self,
-        _len: usize
-    ) -> Result<Self::SerializeTuple, Self::Error> {
+    fn serialize_tuple(self, _len: usize) -> Result<Self::SerializeTuple, Self::Error> {
         Ok(SerializeTuple(vec![]))
     }
 
     fn serialize_tuple_struct(
         self,
         _name: &'static str,
-        _len: usize
+        _len: usize,
     ) -> Result<Self::SerializeTupleStruct, Self::Error> {
         Ok(SerializeTupleStruct(vec![]))
     }
@@ -215,22 +209,22 @@ impl ser::Serializer for Serializer {
         _name: &'static str,
         _variant_index: u32,
         _variant: &'static str,
-        _len: usize
+        _len: usize,
     ) -> Result<Self::SerializeTupleVariant, Self::Error> {
         Ok(SerializeTupleVariant(vec![]))
     }
 
-    fn serialize_map(
-        self,
-        _len: Option<usize>
-    ) -> Result<Self::SerializeMap, Self::Error> {
-        Ok(SerializeMap { map: BTreeMap::new(), key: None })
+    fn serialize_map(self, _len: Option<usize>) -> Result<Self::SerializeMap, Self::Error> {
+        Ok(SerializeMap {
+            map: BTreeMap::new(),
+            key: None,
+        })
     }
 
     fn serialize_struct(
         self,
         _name: &'static str,
-        _len: usize
+        _len: usize,
     ) -> Result<Self::SerializeStruct, Self::Error> {
         Ok(SerializeStruct(BTreeMap::new()))
     }
@@ -240,7 +234,7 @@ impl ser::Serializer for Serializer {
         _name: &'static str,
         _variant_index: u32,
         _variant: &'static str,
-        _len: usize
+        _len: usize,
     ) -> Result<Self::SerializeStructVariant, Self::Error> {
         Ok(SerializeStructVariant(BTreeMap::new()))
     }
@@ -252,12 +246,9 @@ impl ser::SerializeSeq for SerializeSeq {
     type Ok = Value;
     type Error = SerializerError;
 
-    fn serialize_element<T: ?Sized>(
-        &mut self,
-        value: &T
-    ) -> Result<(), Self::Error>
+    fn serialize_element<T: ?Sized>(&mut self, value: &T) -> Result<(), Self::Error>
     where
-        T: ser::Serialize
+        T: ser::Serialize,
     {
         let value = value.serialize(Serializer)?;
         self.0.push(value);
@@ -275,12 +266,9 @@ impl ser::SerializeTuple for SerializeTuple {
     type Ok = Value;
     type Error = SerializerError;
 
-    fn serialize_element<T: ?Sized>(
-        &mut self,
-        value: &T
-    ) -> Result<(), Self::Error>
+    fn serialize_element<T: ?Sized>(&mut self, value: &T) -> Result<(), Self::Error>
     where
-        T: ser::Serialize
+        T: ser::Serialize,
     {
         let value = value.serialize(Serializer)?;
         self.0.push(value);
@@ -298,12 +286,9 @@ impl ser::SerializeTupleStruct for SerializeTupleStruct {
     type Ok = Value;
     type Error = SerializerError;
 
-    fn serialize_field<T: ?Sized>(
-        &mut self,
-        value: &T
-    ) -> Result<(), Self::Error>
+    fn serialize_field<T: ?Sized>(&mut self, value: &T) -> Result<(), Self::Error>
     where
-        T: ser::Serialize
+        T: ser::Serialize,
     {
         let value = value.serialize(Serializer)?;
         self.0.push(value);
@@ -321,12 +306,9 @@ impl ser::SerializeTupleVariant for SerializeTupleVariant {
     type Ok = Value;
     type Error = SerializerError;
 
-    fn serialize_field<T: ?Sized>(
-        &mut self,
-        value: &T
-    ) -> Result<(), Self::Error>
+    fn serialize_field<T: ?Sized>(&mut self, value: &T) -> Result<(), Self::Error>
     where
-        T: ser::Serialize
+        T: ser::Serialize,
     {
         let value = value.serialize(Serializer)?;
         self.0.push(value);
@@ -349,19 +331,16 @@ impl ser::SerializeMap for SerializeMap {
 
     fn serialize_key<T: ?Sized>(&mut self, key: &T) -> Result<(), Self::Error>
     where
-        T: ser::Serialize
+        T: ser::Serialize,
     {
         let key = key.serialize(Serializer)?;
         self.key = Some(key);
         Ok(())
     }
 
-    fn serialize_value<T: ?Sized>(
-        &mut self,
-        value: &T
-    ) -> Result<(), Self::Error>
+    fn serialize_value<T: ?Sized>(&mut self, value: &T) -> Result<(), Self::Error>
     where
-        T: ser::Serialize
+        T: ser::Serialize,
     {
         let value = value.serialize(Serializer)?;
         self.map.insert(self.key.take().unwrap(), value);
@@ -382,10 +361,10 @@ impl ser::SerializeStruct for SerializeStruct {
     fn serialize_field<T: ?Sized>(
         &mut self,
         key: &'static str,
-        value: &T
+        value: &T,
     ) -> Result<(), Self::Error>
     where
-        T: ser::Serialize
+        T: ser::Serialize,
     {
         let key = Value::String(key.to_string());
         let value = value.serialize(Serializer)?;
@@ -407,10 +386,10 @@ impl ser::SerializeStructVariant for SerializeStructVariant {
     fn serialize_field<T: ?Sized>(
         &mut self,
         key: &'static str,
-        value: &T
+        value: &T,
     ) -> Result<(), Self::Error>
     where
-        T: ser::Serialize
+        T: ser::Serialize,
     {
         let key = Value::String(key.to_string());
         let value = value.serialize(Serializer)?;
