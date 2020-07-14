@@ -3,7 +3,7 @@ use std::collections::BTreeMap;
 use std::error::Error;
 use std::fmt;
 
-use Value;
+use crate::Value;
 
 #[derive(Debug)]
 pub enum SerializerError {

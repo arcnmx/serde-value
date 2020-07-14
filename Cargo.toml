@@ -2,6 +2,7 @@
 name = "serde-value"
 version = "0.6.0"
 authors = ["arcnmx"]
+edition = "2018"
 
 description = "Serialization value trees"
 documentation = "http://arcnmx.github.io/serde-value/serde_value/"

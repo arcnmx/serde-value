@@ -1,13 +1,5 @@
 #![doc(html_root_url="https://arcnmx.github.io/serde-value")]
 
-#[macro_use]
-extern crate serde;
-extern crate ordered_float;
-
-#[cfg(test)]
-#[macro_use]
-extern crate serde_derive;
-
 use std::collections::BTreeMap;
 use std::cmp::Ordering;
 use std::hash::{Hash, Hasher};
@@ -192,6 +184,9 @@ impl PartialOrd for Value {
         Some(self.cmp(rhs))
     }
 }
+
+#[cfg(test)]
+use serde_derive::{Deserialize, Serialize};
 
 #[test]
 fn de_smoke_test() {
