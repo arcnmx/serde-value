@@ -1,10 +1,10 @@
-use serde::de;
+use serde::{forward_to_deserialize_any, de};
 use std::collections::BTreeMap;
 use std::error::Error;
 use std::fmt;
 use std::marker::PhantomData;
 
-use Value;
+use crate::Value;
 
 #[derive(Debug)]
 pub enum Unexpected {
@@ -96,15 +96,15 @@ impl de::Error for DeserializerError {
         DeserializerError::Custom(msg.to_string())
     }
 
-    fn invalid_type(unexp: de::Unexpected, exp: &de::Expected) -> Self {
+    fn invalid_type(unexp: de::Unexpected, exp: &dyn de::Expected) -> Self {
         DeserializerError::InvalidType(unexp.into(), exp.to_string())
     }
 
-    fn invalid_value(unexp: de::Unexpected, exp: &de::Expected) -> Self {
+    fn invalid_value(unexp: de::Unexpected, exp: &dyn de::Expected) -> Self {
         DeserializerError::InvalidValue(unexp.into(), exp.to_string())
     }
 
-    fn invalid_length(len: usize, exp: &de::Expected) -> Self {
+    fn invalid_length(len: usize, exp: &dyn de::Expected) -> Self {
         DeserializerError::InvalidLength(len, exp.to_string())
     }
 
@@ -268,7 +268,7 @@ impl<'de> de::Visitor<'de> for ValueVisitor {
 
     fn visit_seq<V: de::SeqAccess<'de>>(self, mut visitor: V) -> Result<Value, V::Error> {
         let mut values = Vec::new();
-        while let Some(elem) = try!(visitor.next_element()) {
+        while let Some(elem) = visitor.next_element()? {
             values.push(elem);
         }
         Ok(Value::Seq(values))
@@ -276,7 +276,7 @@ impl<'de> de::Visitor<'de> for ValueVisitor {
 
     fn visit_map<V: de::MapAccess<'de>>(self, mut visitor: V) -> Result<Value, V::Error> {
         let mut values = BTreeMap::new();
-        while let Some((key, value)) = try!(visitor.next_entry()) {
+        while let Some((key, value)) = visitor.next_entry()? {
             values.insert(key, value);
         }
         Ok(Value::Map(values))

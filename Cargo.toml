@@ -2,6 +2,7 @@
 name = "serde-value"
 version = "0.6.0"
 authors = ["arcnmx"]
+edition = "2018"
 
 description = "Serialization value trees"
 documentation = "http://arcnmx.github.io/serde-value/serde_value/"
@@ -12,7 +13,7 @@ license = "MIT"
 
 [dependencies]
 serde = "^1.0.0"
-ordered-float = "^1.0.1"
+ordered-float = "^2.0.0"
 
 [dev-dependencies]
 serde_derive = "^1.0.0"
