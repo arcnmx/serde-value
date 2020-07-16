@@ -1,4 +1,4 @@
-#![doc(html_root_url="https://arcnmx.github.io/serde-value")]
+#![doc(html_root_url="https://docs.rs/serde-value/0.7.0/")]
 
 use std::collections::BTreeMap;
 use std::cmp::Ordering;

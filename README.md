@@ -9,6 +9,6 @@
 [release-badge]: https://img.shields.io/crates/v/serde-value.svg?style=flat-square
 [cargo]: https://crates.io/crates/serde-value
 [docs-badge]: https://img.shields.io/badge/API-docs-blue.svg?style=flat-square
-[docs]: http://arcnmx.github.io/serde-value/serde_value/
+[docs]: https://docs.rs/serde-value/*/serde_value/
 [license-badge]: https://img.shields.io/badge/license-MIT-lightgray.svg?style=flat-square
 [license]: https://github.com/arcnmx/serde-value/blob/master/COPYING
