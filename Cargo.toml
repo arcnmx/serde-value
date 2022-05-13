@@ -1,19 +1,17 @@
 [package]
 name = "serde-value"
 version = "0.7.0"
-authors = ["arcnmx"]
+authors = ["arcnmx", "Bartłomiej Kuras"]
 edition = "2018"
 
-description = "Serialization value trees"
-documentation = "https://docs.rs/serde-value/*/serde_value/"
-repository = "https://github.com/arcnmx/serde-value"
+description = "Serialization value trees for CosmWasm"
+repository = "https://github.com/hashedone/serde-cw-value"
 readme = "README.md"
 keywords = ["serde"]
 license = "MIT"
 
 [dependencies]
 serde = "^1.0.0"
-ordered-float = "^2.0.0"
 
 [dev-dependencies]
 serde_derive = "^1.0.0"
