@@ -53,8 +53,34 @@ impl<'a> From<de::Unexpected<'a>> for Unexpected {
     }
 }
 
+impl fmt::Display for Unexpected {
+    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        use self::Unexpected::*;
+        match self {
+            Bool(b) => write!(formatter, "boolean `{}`", b),
+            Unsigned(i) => write!(formatter, "integer `{}`", i),
+            Signed(i) => write!(formatter, "integer `{}`", i),
+            Float => write!(formatter, "floating point"),
+            Char(c) => write!(formatter, "character `{}`", c),
+            Str(s) => write!(formatter, "string {:?}", s),
+            Bytes(_) => write!(formatter, "byte array"),
+            Unit => write!(formatter, "unit value"),
+            Option => write!(formatter, "Option value"),
+            NewtypeStruct => write!(formatter, "newtype struct"),
+            Seq => write!(formatter, "sequence"),
+            Map => write!(formatter, "map"),
+            Enum => write!(formatter, "enum"),
+            UnitVariant => write!(formatter, "unit variant"),
+            NewtypeVariant => write!(formatter, "newtype variant"),
+            TupleVariant => write!(formatter, "tuple variant"),
+            StructVariant => write!(formatter, "struct variant"),
+            Other(other) => formatter.write_str(other),
+        }
+    }
+}
+
 impl Unexpected {
-    pub fn to_unexpected<'a>(&'a self) -> de::Unexpected<'a> {
+    pub fn to_unexpected(&self) -> de::Unexpected {
         match *self {
             Unexpected::Bool(v) => de::Unexpected::Bool(v),
             Unexpected::Unsigned(v) => de::Unexpected::Unsigned(v),
@@ -83,7 +109,7 @@ pub enum DeserializerError {
     Custom(String),
     InvalidType(Unexpected, String),
     InvalidValue(Unexpected, String),
-    InvalidLength(usize, String),
+    InvalidLength(u32, String),
     UnknownVariant(String, &'static [&'static str]),
     UnknownField(String, &'static [&'static str]),
     MissingField(&'static str),
@@ -104,7 +130,7 @@ impl de::Error for DeserializerError {
     }
 
     fn invalid_length(len: usize, exp: &dyn de::Expected) -> Self {
-        DeserializerError::InvalidLength(len, exp.to_string())
+        DeserializerError::InvalidLength(len as u32, exp.to_string())
     }
 
     fn unknown_variant(field: &str, expected: &'static [&'static str]) -> Self {
@@ -134,7 +160,9 @@ impl DeserializerError {
             DeserializerError::InvalidValue(ref unexp, ref exp) => {
                 E::invalid_value(unexp.to_unexpected(), &&**exp)
             }
-            DeserializerError::InvalidLength(len, ref exp) => E::invalid_length(len, &&**exp),
+            DeserializerError::InvalidLength(len, ref exp) => {
+                E::invalid_length(len as usize, &&**exp)
+            }
             DeserializerError::UnknownVariant(ref field, exp) => E::unknown_variant(field, exp),
             DeserializerError::UnknownField(ref field, exp) => E::unknown_field(field, exp),
             DeserializerError::MissingField(field) => E::missing_field(field),
@@ -155,28 +183,18 @@ impl Error for DeserializerError {
 
 impl fmt::Display for DeserializerError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            DeserializerError::Custom(ref msg) => write!(f, "{}", msg),
-            DeserializerError::InvalidType(ref unexp, ref exp) => {
-                write!(
-                    f,
-                    "Invalid type {}. Expected {}",
-                    unexp.to_unexpected(),
-                    exp
-                )
+        match self {
+            DeserializerError::Custom(msg) => write!(f, "{}", msg),
+            DeserializerError::InvalidType(unexp, exp) => {
+                write!(f, "Invalid type {}. Expected {}", unexp, exp)
             }
-            DeserializerError::InvalidValue(ref unexp, ref exp) => {
-                write!(
-                    f,
-                    "Invalid value {}. Expected {}",
-                    unexp.to_unexpected(),
-                    exp
-                )
+            DeserializerError::InvalidValue(unexp, exp) => {
+                write!(f, "Invalid value {}. Expected {}", unexp, exp)
             }
-            DeserializerError::InvalidLength(len, ref exp) => {
+            DeserializerError::InvalidLength(len, exp) => {
                 write!(f, "Invalid length {}. Expected {}", len, exp)
             }
-            DeserializerError::UnknownVariant(ref field, exp) => {
+            DeserializerError::UnknownVariant(field, exp) => {
                 write!(
                     f,
                     "Unknown variant {}. Expected one of {}",
@@ -184,7 +202,7 @@ impl fmt::Display for DeserializerError {
                     exp.join(", ")
                 )
             }
-            DeserializerError::UnknownField(ref field, exp) => {
+            DeserializerError::UnknownField(field, exp) => {
                 write!(
                     f,
                     "Unknown field {}. Expected one of {}",
@@ -433,8 +451,8 @@ where
         };
 
         let d = EnumDeserializer {
-            variant: variant,
-            value: value,
+            variant,
+            value,
             error: Default::default(),
         };
         visitor.visit_enum(d)

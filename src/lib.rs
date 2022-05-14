@@ -52,6 +52,7 @@ impl Hash for Value {
             Value::I64(v) => v.hash(hasher),
             Value::Char(v) => v.hash(hasher),
             Value::String(ref v) => v.hash(hasher),
+            #[allow(clippy::unit_hash)]
             Value::Unit => ().hash(hasher),
             Value::Option(ref v) => v.hash(hasher),
             Value::Newtype(ref v) => v.hash(hasher),
@@ -107,7 +108,7 @@ impl Ord for Value {
             (&Value::Seq(ref v0), &Value::Seq(ref v1)) => v0.cmp(v1),
             (&Value::Map(ref v0), &Value::Map(ref v1)) => v0.cmp(v1),
             (&Value::Bytes(ref v0), &Value::Bytes(ref v1)) => v0.cmp(v1),
-            (ref v0, ref v1) => v0.discriminant().cmp(&v1.discriminant()),
+            (v0, v1) => v0.discriminant().cmp(&v1.discriminant()),
         }
     }
 }
@@ -206,7 +207,7 @@ fn ser_smoke_test() {
         c: Vec<bool>,
     }
 
-    let foo = Foo {
+    let item = Foo {
         a: 15,
         b: "hello".into(),
         c: vec![true, false],
@@ -225,7 +226,7 @@ fn ser_smoke_test() {
         .collect(),
     );
 
-    let value = to_value(&foo).unwrap();
+    let value = to_value(&item).unwrap();
     assert_eq!(expected, value);
 }
 
@@ -261,9 +262,9 @@ fn serialize_from_enum() {
     let bar = Foo::Bar;
     assert_eq!(to_value(&bar).unwrap(), Value::String("Bar".into()));
 
-    let baz = Foo::Baz(1);
+    let item = Foo::Baz(1);
     assert_eq!(
-        to_value(&baz).unwrap(),
+        to_value(&item).unwrap(),
         Value::Map(
             vec![(Value::String("Baz".into()), Value::U8(1))]
                 .into_iter()
@@ -383,8 +384,8 @@ fn deserialize_newtype() {
     struct Foo(i32);
 
     let input = Value::I32(5);
-    let foo = Foo::deserialize(input).unwrap();
-    assert_eq!(foo, Foo(5));
+    let item = Foo::deserialize(input).unwrap();
+    assert_eq!(item, Foo(5));
 }
 
 #[test]
