@@ -1,7 +1,7 @@
 [package]
 name = "serde-cw-value"
-version = "0.7.0"
-authors = ["arcnmx", "Bartłomiej Kuras"]
+version = "1.0.0"
+authors = ["Bartłomiej Kuras"]
 edition = "2018"
 
 description = "Serialization value trees for CosmWasm"
