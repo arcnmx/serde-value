@@ -1,13 +1,13 @@
 [package]
 name = "serde-cw-value"
 version = "0.7.0"
-authors = ["arcnmx", "Bartłomiej Kuras"]
+authors = ["Bartłomiej Kuras"]
 edition = "2018"
 
 description = "Serialization value trees for CosmWasm"
 repository = "https://github.com/hashedone/serde-cw-value"
 readme = "README.md"
-keywords = ["serde"]
+keywords = ["serde", "wasm"]
 license = "MIT"
 
 [dependencies]
