@@ -1,4 +1,4 @@
-use serde::{forward_to_deserialize_any, de};
+use serde::{forward_to_deserialize_any, de::{self, VariantAccess}};
 use std::collections::BTreeMap;
 use std::error::Error;
 use std::fmt;
@@ -288,6 +288,16 @@ impl<'de> de::Visitor<'de> for ValueVisitor {
 
     fn visit_byte_buf<E>(self, v: Vec<u8>) -> Result<Value, E> {
         Ok(Value::Bytes(v))
+    }
+
+    fn visit_enum<A: de::EnumAccess<'de>>(self, data: A) -> Result<Self::Value, A::Error> {
+        let mut map = BTreeMap::new();
+        let (key, value) = data.variant()?;
+        let value = value
+            .newtype_variant()
+            .unwrap_or(Value::Unit);
+        map.insert(key, value);
+        Ok(Value::Map(map))
     }
 }
 
