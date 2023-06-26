@@ -1,7 +1,11 @@
 use serde::ser;
-use std::collections::BTreeMap;
-use std::error::Error;
-use std::fmt;
+use alloc::collections::btree_map::BTreeMap;
+use core::error::Error;
+use core::fmt;
+use alloc::string::{String, ToString};
+use crate::alloc::borrow::ToOwned;
+use alloc::vec::Vec;
+use alloc::boxed::Box;
 
 use crate::Value;
 
@@ -32,19 +36,19 @@ impl ser::Error for SerializerError {
 
 impl ser::Serialize for Value {
     fn serialize<S: ser::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        match *self {
-            Value::Bool(v) => s.serialize_bool(v),
-            Value::U8(v) => s.serialize_u8(v),
-            Value::U16(v) => s.serialize_u16(v),
-            Value::U32(v) => s.serialize_u32(v),
-            Value::U64(v) => s.serialize_u64(v),
-            Value::I8(v) => s.serialize_i8(v),
-            Value::I16(v) => s.serialize_i16(v),
-            Value::I32(v) => s.serialize_i32(v),
-            Value::I64(v) => s.serialize_i64(v),
-            Value::F32(v) => s.serialize_f32(v),
-            Value::F64(v) => s.serialize_f64(v),
-            Value::Char(v) => s.serialize_char(v),
+        match self {
+            Value::Bool(v) => s.serialize_bool(v.to_owned()),
+            Value::U8(v) => s.serialize_u8(v.to_owned()),
+            Value::U16(v) => s.serialize_u16(v.to_owned()),
+            Value::U32(v) => s.serialize_u32(v.to_owned()),
+            Value::U64(v) => s.serialize_u64(v.to_owned()),
+            Value::I8(v) => s.serialize_i8(v.to_owned()),
+            Value::I16(v) => s.serialize_i16(v.to_owned()),
+            Value::I32(v) => s.serialize_i32(v.to_owned()),
+            Value::I64(v) => s.serialize_i64(v.to_owned()),
+            Value::F32(v) => s.serialize_f32(v.to_owned()),
+            Value::F64(v) => s.serialize_f64(v.to_owned()),
+            Value::Char(v) => s.serialize_char(v.to_owned()),
             Value::String(ref v) => s.serialize_str(v),
             Value::Unit => s.serialize_unit(),
             Value::Option(None) => s.serialize_none(),

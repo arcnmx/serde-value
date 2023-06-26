@@ -1,10 +1,22 @@
-#![doc(html_root_url="https://docs.rs/serde-value/0.7.0/")]
+#![no_std]
+#![feature(error_in_core)]
+#[macro_use]
+extern crate alloc;
+extern crate core;
 
-use std::collections::BTreeMap;
-use std::cmp::Ordering;
-use std::hash::{Hash, Hasher};
+#[cfg(test)]
+#[macro_use]
+extern crate std;
+
+use alloc::collections::btree_map::BTreeMap;
+use core::cmp::Ordering;
+use core::hash::{Hash, Hasher};
 use serde::Deserialize;
 use ordered_float::OrderedFloat;
+use alloc::boxed::Box;
+use alloc::string::String;
+use alloc::vec::Vec;
+use crate::alloc::borrow::ToOwned;
 
 pub use de::*;
 pub use ser::*;
@@ -186,199 +198,202 @@ impl PartialOrd for Value {
 }
 
 #[cfg(test)]
-use serde_derive::{Deserialize, Serialize};
+mod tests{
+    use super::*;
+    use serde_derive::{Deserialize, Serialize};
 
-#[test]
-fn de_smoke_test() {
-    // some convoluted Value
-    let value = Value::Option(Some(Box::new(Value::Seq(vec![
-        Value::U16(8),
-        Value::Char('a'),
-        Value::F32(1.0),
-        Value::String("hello".into()),
-        Value::Map(vec![
-            (Value::Bool(false), Value::Unit),
-            (Value::Bool(true), Value::Newtype(Box::new(
-                Value::Bytes(b"hi".as_ref().into())
-            ))),
-        ].into_iter().collect()),
-    ]))));
+    #[test]
+    fn de_smoke_test() {
+        // some convoluted Value
+        let value = Value::Option(Some(Box::new(Value::Seq(vec![
+            Value::U16(8),
+            Value::Char('a'),
+            Value::F32(1.0),
+            Value::String("hello".into()),
+            Value::Map(vec![
+                (Value::Bool(false), Value::Unit),
+                (Value::Bool(true), Value::Newtype(Box::new(
+                    Value::Bytes(b"hi".as_ref().into())
+                ))),
+            ].into_iter().collect()),
+        ]))));
 
-    // assert that the value remains unchanged through deserialization
-    let value_de = Value::deserialize(value.clone()).unwrap();
-    assert_eq!(value_de, value);
-}
-
-#[test]
-fn ser_smoke_test() {
-    #[derive(Serialize)]
-    struct Foo {
-        a: u32,
-        b: String,
-        c: Vec<bool>,
+        // assert that the value remains unchanged through deserialization
+        let value_de = Value::deserialize(value.clone()).unwrap();
+        assert_eq!(value_de, value);
     }
 
-    let foo = Foo {
-        a: 15,
-        b: "hello".into(),
-        c: vec![true, false],
-    };
-
-    let expected = Value::Map(vec![
-        (Value::String("a".into()), Value::U32(15)),
-        (Value::String("b".into()), Value::String("hello".into())),
-        (Value::String("c".into()), Value::Seq(vec![Value::Bool(true), Value::Bool(false)])),
-    ].into_iter().collect());
-
-    let value = to_value(&foo).unwrap();
-    assert_eq!(expected, value);
-}
-
-#[test]
-fn deserialize_into_enum() {
-    #[derive(Deserialize, Debug, PartialEq, Eq)]
-    enum Foo {
-        Bar,
-        Baz(u8),
-    }
-
-    let value = Value::String("Bar".into());
-    assert_eq!(Foo::deserialize(value).unwrap(), Foo::Bar);
-
-    let value = Value::Map(vec![
-        (Value::String("Baz".into()), Value::U8(1))
-    ].into_iter().collect());
-    assert_eq!(Foo::deserialize(value).unwrap(), Foo::Baz(1));
-}
-
-#[test]
-fn serialize_from_enum() {
-    #[derive(Serialize)]
-    enum Foo {
-        Bar,
-        Baz(u8),
-        Qux { quux: u8 },
-        Corge(u8, u8),
-    }
-
-    let bar = Foo::Bar;
-    assert_eq!(to_value(&bar).unwrap(), Value::String("Bar".into()));
-
-    let baz = Foo::Baz(1);
-    assert_eq!(
-        to_value(&baz).unwrap(),
-        Value::Map(
-            vec![(Value::String("Baz".into()), Value::U8(1))]
-                .into_iter()
-                .collect(),
-        )
-    );
-
-    let qux = Foo::Qux { quux: 2 };
-    assert_eq!(
-        to_value(&qux).unwrap(),
-        Value::Map(
-            vec![(
-                Value::String("Qux".into()),
-                Value::Map(
-                    vec![(Value::String("quux".into()), Value::U8(2))]
-                        .into_iter()
-                        .collect()
-                )
-            )]
-            .into_iter()
-            .collect()
-        )
-    );
-
-    let corge = Foo::Corge(3, 4);
-    assert_eq!(
-        to_value(&corge).unwrap(),
-        Value::Map(
-            vec![(
-                Value::String("Corge".into()),
-                Value::Seq(vec![Value::U8(3), Value::U8(4)])
-            )]
-            .into_iter()
-            .collect()
-        )
-    );
-}
-
-#[test]
-fn deserialize_inside_deserialize_impl() {
-    #[derive(Debug, PartialEq, Eq)]
-    enum Event {
-        Added(u32),
-        Error(u8),
-    }
-
-    impl<'de> serde::Deserialize<'de> for Event {
-        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error> where D: serde::Deserializer<'de> {
-            #[derive(Deserialize)]
-            struct RawEvent {
-                kind: String,
-                object: Value,
-            }
-
-            let raw_event = RawEvent::deserialize(deserializer)?;
-
-            // Cannot directly use Value as Deserializer, since error type needs to be
-            // generic D::Error rather than specific serde_value::DeserializerError
-            let object_deserializer = ValueDeserializer::new(raw_event.object);
-
-            Ok(match &*raw_event.kind {
-                "ADDED" => Event::Added(<_>::deserialize(object_deserializer)?),
-                "ERROR" => Event::Error(<_>::deserialize(object_deserializer)?),
-                kind => return Err(serde::de::Error::unknown_variant(kind, &["ADDED", "ERROR"])),
-            })
+    #[test]
+    fn ser_smoke_test() {
+        #[derive(Serialize)]
+        struct Foo {
+            a: u32,
+            b: String,
+            c: Vec<bool>,
         }
+
+        let foo = Foo {
+            a: 15,
+            b: "hello".into(),
+            c: vec![true, false],
+        };
+
+        let expected = Value::Map(vec![
+            (Value::String("a".into()), Value::U32(15)),
+            (Value::String("b".into()), Value::String("hello".into())),
+            (Value::String("c".into()), Value::Seq(vec![Value::Bool(true), Value::Bool(false)])),
+        ].into_iter().collect());
+
+        let value = to_value(&foo).unwrap();
+        assert_eq!(expected, value);
     }
 
-    let input = Value::Map(vec![
-        (Value::String("kind".to_owned()), Value::String("ADDED".to_owned())),
-        (Value::String("object".to_owned()), Value::U32(5)),
-    ].into_iter().collect());
-    let event = Event::deserialize(input).expect("could not deserialize ADDED event");
-    assert_eq!(event, Event::Added(5));
+    #[test]
+    fn deserialize_into_enum() {
+        #[derive(Deserialize, Debug, PartialEq, Eq)]
+        enum Foo {
+            Bar,
+            Baz(u8),
+        }
 
-    let input = Value::Map(vec![
-        (Value::String("kind".to_owned()), Value::String("ERROR".to_owned())),
-        (Value::String("object".to_owned()), Value::U8(5)),
-    ].into_iter().collect());
-    let event = Event::deserialize(input).expect("could not deserialize ERROR event");
-    assert_eq!(event, Event::Error(5));
+        let value = Value::String("Bar".into());
+        assert_eq!(Foo::deserialize(value).unwrap(), Foo::Bar);
 
-    let input = Value::Map(vec![
-        (Value::String("kind".to_owned()), Value::String("ADDED".to_owned())),
-        (Value::String("object".to_owned()), Value::Unit),
-    ].into_iter().collect());
-    let _ = Event::deserialize(input).expect_err("expected deserializing bad ADDED event to fail");
-}
-
-#[test]
-fn deserialize_newtype() {
-    #[derive(Debug, Deserialize, PartialEq)]
-    struct Foo(i32);
-
-    let input = Value::I32(5);
-    let foo = Foo::deserialize(input).unwrap();
-    assert_eq!(foo, Foo(5));
-}
-
-#[test]
-fn deserialize_newtype2() {
-    #[derive(Debug, Deserialize, PartialEq)]
-    struct Foo(i32);
-
-    #[derive(Debug, Deserialize, PartialEq)]
-    struct Bar {
-        foo: Foo,
+        let value = Value::Map(vec![
+            (Value::String("Baz".into()), Value::U8(1))
+        ].into_iter().collect());
+        assert_eq!(Foo::deserialize(value).unwrap(), Foo::Baz(1));
     }
 
-    let input = Value::Map(vec![
-        (Value::String("foo".to_owned()), Value::I32(5))
-    ].into_iter().collect());
-    let bar = Bar::deserialize(input).unwrap();
-    assert_eq!(bar, Bar { foo: Foo(5) });
+    #[test]
+    fn serialize_from_enum() {
+        #[derive(Serialize)]
+        enum Foo {
+            Bar,
+            Baz(u8),
+            Qux { quux: u8 },
+            Corge(u8, u8),
+        }
+
+        let bar = Foo::Bar;
+        assert_eq!(to_value(&bar).unwrap(), Value::String("Bar".into()));
+
+        let baz = Foo::Baz(1);
+        assert_eq!(
+            to_value(&baz).unwrap(),
+            Value::Map(
+                vec![(Value::String("Baz".into()), Value::U8(1))]
+                    .into_iter()
+                    .collect(),
+            )
+        );
+
+        let qux = Foo::Qux { quux: 2 };
+        assert_eq!(
+            to_value(&qux).unwrap(),
+            Value::Map(
+                vec![(
+                    Value::String("Qux".into()),
+                    Value::Map(
+                        vec![(Value::String("quux".into()), Value::U8(2))]
+                            .into_iter()
+                            .collect()
+                    )
+                )]
+                    .into_iter()
+                    .collect()
+            )
+        );
+
+        let corge = Foo::Corge(3, 4);
+        assert_eq!(
+            to_value(&corge).unwrap(),
+            Value::Map(
+                vec![(
+                    Value::String("Corge".into()),
+                    Value::Seq(vec![Value::U8(3), Value::U8(4)])
+                )]
+                    .into_iter()
+                    .collect()
+            )
+        );
+    }
+
+    #[test]
+    fn deserialize_inside_deserialize_impl() {
+        #[derive(Debug, PartialEq, Eq)]
+        enum Event {
+            Added(u32),
+            Error(u8),
+        }
+
+        impl<'de> serde::Deserialize<'de> for Event {
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error> where D: serde::Deserializer<'de> {
+                #[derive(Deserialize)]
+                struct RawEvent {
+                    kind: String,
+                    object: Value,
+                }
+
+                let raw_event = RawEvent::deserialize(deserializer)?;
+
+                // Cannot directly use Value as Deserializer, since error type needs to be
+                // generic D::Error rather than specific serde_value::DeserializerError
+                let object_deserializer = ValueDeserializer::new(raw_event.object);
+
+                Ok(match &*raw_event.kind {
+                    "ADDED" => Event::Added(<_>::deserialize(object_deserializer)?),
+                    "ERROR" => Event::Error(<_>::deserialize(object_deserializer)?),
+                    kind => return Err(serde::de::Error::unknown_variant(kind, &["ADDED", "ERROR"])),
+                })
+            }
+        }
+
+        let input = Value::Map(vec![
+            (Value::String("kind".to_owned()), Value::String("ADDED".to_owned())),
+            (Value::String("object".to_owned()), Value::U32(5)),
+        ].into_iter().collect());
+        let event = Event::deserialize(input).expect("could not deserialize ADDED event");
+        assert_eq!(event, Event::Added(5));
+
+        let input = Value::Map(vec![
+            (Value::String("kind".to_owned()), Value::String("ERROR".to_owned())),
+            (Value::String("object".to_owned()), Value::U8(5)),
+        ].into_iter().collect());
+        let event = Event::deserialize(input).expect("could not deserialize ERROR event");
+        assert_eq!(event, Event::Error(5));
+
+        let input = Value::Map(vec![
+            (Value::String("kind".to_owned()), Value::String("ADDED".to_owned())),
+            (Value::String("object".to_owned()), Value::Unit),
+        ].into_iter().collect());
+        let _ = Event::deserialize(input).expect_err("expected deserializing bad ADDED event to fail");
+    }
+
+    #[test]
+    fn deserialize_newtype() {
+        #[derive(Debug, Deserialize, PartialEq)]
+        struct Foo(i32);
+
+        let input = Value::I32(5);
+        let foo = Foo::deserialize(input).unwrap();
+        assert_eq!(foo, Foo(5));
+    }
+
+    #[test]
+    fn deserialize_newtype2() {
+        #[derive(Debug, Deserialize, PartialEq)]
+        struct Foo(i32);
+
+        #[derive(Debug, Deserialize, PartialEq)]
+        struct Bar {
+            foo: Foo,
+        }
+
+        let input = Value::Map(vec![
+            (Value::String("foo".to_owned()), Value::I32(5))
+        ].into_iter().collect());
+        let bar = Bar::deserialize(input).unwrap();
+        assert_eq!(bar, Bar { foo: Foo(5) });
+    }
 }
